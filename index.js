@@ -21,7 +21,6 @@ const client = new Client({
 
 client.on("ready", async () => {
   console.log(`Logged in as ${client.user.tag}!`);
-  client.user.setStatus("online", "looking to hunt people");
 
   setInterval(async () => {
     await fetch(
