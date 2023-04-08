@@ -7,7 +7,7 @@ WORKDIR /app
 # Updating and downloading crontab
 RUN apt-get update && apt-get install -y cron
 
-COPY /home/pi/github_update.sh /app
+COPY github_update.sh /app
 
 # Make the script executable
 RUN chmod +x github_update.sh
