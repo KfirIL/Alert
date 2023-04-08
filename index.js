@@ -21,7 +21,7 @@ const client = new Client({
 
 client.on("ready", async () => {
   console.log(`Logged in as ${client.user.tag}!`);
-  client.user.setStatus("dnd");
+  client.user.setStatus("online");
 
   setInterval(async () => {
     await fetch(
