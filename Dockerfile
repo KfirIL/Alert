@@ -8,4 +8,4 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y cron
 
 # Start the app
-CMD bash -c "npm install && node . && chmod +x /app/github_update.sh && crontab -l | { cat; echo '*/1 * * * * /app/github_update.sh'; } | crontab - && tail -f /dev/null"
+CMD ["/bin/bash", "npm install && node . && chmod +x github_update.sh && crontab -l | { cat; echo "*/1 * * * * /app/github_update.sh"; } | crontab -"]
