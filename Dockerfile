@@ -7,11 +7,14 @@ WORKDIR /app
 # Updating and downloading crontab
 RUN apt-get update && apt-get install -y cron
 
-# Make the script executable
-RUN chmod +x /app/github_update.sh
+# Copying the github update script
+COPY github_update.sh /app
 
-# Set up a cron job to check for updates every 10 minutes
-RUN crontab -l | { cat; echo "*/60 * * * * /app/github_update.sh"; } | crontab -
+# Make the script executable
+RUN chmod +x github_update.sh
+
+# Set up a cron job to check for updates every minute
+RUN crontab -l | { cat; echo "*/1 * * * * /app/github_update.sh"; } | crontab -
 
 # Start the app
 CMD ["bash", "-c", "npm install && node ."]
