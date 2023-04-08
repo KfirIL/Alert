@@ -5,20 +5,20 @@ const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("הגדרת-חדר-התראות")
-    .setDescription("חדר שבו יוצגו ההתראות")
+    .setName("הגדרת-חדר-התרעות")
+    .setDescription("חדר שבו יוצגו ההתרעות")
     .addChannelOption((option) =>
       option
-        .setName("הערוץ-בו-תרצה-לקבל-התראות")
+        .setName("הערוץ-בו-תרצה-לקבל-התרעות")
         .setRequired(true)
-        .setDescription("הכנס את הערוץ שבו אתה רוצה לקבל את ההתראות")
+        .setDescription("הכנס את הערוץ שבו אתה רוצה לקבל את ההתרעות")
     )
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
   async execute(interaction) {
     const serverID = interaction.guild.id;
     const channelID = interaction.options.getChannel(
-      "הערוץ-בו-תרצה-לקבל-התראות"
+      "הערוץ-בו-תרצה-לקבל-התרעות"
     ).id;
 
     fs.readFile("channelServer.json", "utf8", (err, data) => {

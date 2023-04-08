@@ -61,7 +61,7 @@ client.on("ready", async () => {
                 if (Math.abs(currentDate - givenDate) <= 2000) {
                   const embed = new EmbedBuilder()
                     .setColor("#e8793f")
-                    .setTitle(`התראת פיקוד העורף ב–${alert.data}`)
+                    .setTitle(`התרעת פיקוד העורף ב–${alert.data}`)
                     .setURL("https://www.oref.org.il//12481-he/Pakar.aspx")
                     .setAuthor({
                       name: "פיקוד העורף",
@@ -71,7 +71,7 @@ client.on("ready", async () => {
                     })
                     .setDescription(alert.category_desc)
                     .addFields({
-                      name: `התראה של פיקוד העורף בשעה–${alert.time}`,
+                      name: `התרעה של פיקוד העורף בשעה–${alert.time}`,
                       value: alert.date,
                     });
                   channel.send({ embeds: [embed] });
