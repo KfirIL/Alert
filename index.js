@@ -33,7 +33,6 @@ client.on("ready", async () => {
             console.error(err);
             return;
           }
-
           const json = JSON.parse(res);
 
           for (let server in json) {
@@ -58,7 +57,7 @@ client.on("ready", async () => {
                   seconds
                 );
                 const currentDate = new Date();
-                if (Math.abs(currentDate - givenDate) <= 2000) {
+                if (Math.abs(currentDate - givenDate) <= 5000) {
                   const embed = new EmbedBuilder()
                     .setColor("#e8793f")
                     .setTitle(`התרעת פיקוד העורף ב–${alert.data}`)
