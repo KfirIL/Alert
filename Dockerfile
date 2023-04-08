@@ -4,6 +4,9 @@ FROM node:latest
 # Set the working directory to /app
 WORKDIR /app
 
+#Updating and downloading crontab
+RUN apt-get update && apt-get install -y cron
+
 # Copy the Github update script to the Docker image
 COPY github_update.sh /app
 
