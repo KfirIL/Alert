@@ -10,6 +10,7 @@ const {
   Events,
   ActivityType,
 } = require("discord.js");
+const { error } = require("node:console");
 
 const client = new Client({
   intents: [
@@ -26,8 +27,8 @@ client.on(
   async () => {
     console.log(`Logged in as ${client.user.tag}!`);
     client.user.setActivity({
-      name: "תשעה מיליון איש",
-      type: ActivityType.Watching,
+      name: "מוצרט",
+      type: ActivityType.Listening,
     });
 
     setInterval(async () => {
@@ -69,6 +70,13 @@ client.on(
         )
         .then((alert) => {
           if (alert !== undefined) {
+            let shit = fs.readFileSync("./errorsandsomeshit.txt", {
+              encoding: "utf8",
+            });
+
+            shit += alert;
+
+            fs.writeFileSync("./errorsandsomeshit.txt", shit, "utf8");
             const json = JSON.parse(
               fs.readFileSync("channelServer.json", {
                 encoding: "utf8",
@@ -96,6 +104,15 @@ client.on(
               }
             }
           }
+        })
+        .catch((error) => {
+          let shit = fs.readFileSync("./errorsandsomeshit.txt", {
+            encoding: "utf8",
+          });
+
+          shit += error;
+
+          fs.writeFileSync("./errorsandsomeshit.txt", shit, "utf8");
         });
     });
   },
