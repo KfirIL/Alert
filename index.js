@@ -26,8 +26,8 @@ client.on(
   async () => {
     console.log(`Logged in as ${client.user.tag}!`);
     client.user.setActivity({
-      name: "מוצרט",
-      type: ActivityType.Listening,
+      name: "תשעה מיליון איש",
+      type: ActivityType.Watching,
     });
 
     setInterval(async () => {
