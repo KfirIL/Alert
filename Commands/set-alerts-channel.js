@@ -42,9 +42,7 @@ module.exports = {
 
     const newData = JSON.stringify(jsonData);
 
-    fs.writeFileSync("channelServer.json", {
-      data: newData,
-    });
+    fs.writeFileSync("channelServer.json", newData, "utf8");
 
     await interaction.reply({ content: "החדר הוגדר בהצלחה", ephemeral: true });
   },

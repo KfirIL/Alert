@@ -26,62 +26,76 @@ client.on(
   async () => {
     console.log(`Logged in as ${client.user.tag}!`);
     client.user.setActivity({
-      name: `תשעה מיליון איש`,
-      type: ActivityType.Watching,
+      name: "מוצרט",
+      type: ActivityType.Listening,
     });
 
     setInterval(async () => {
-      await fetch(
-        "https://www.oref.org.il//Shared/Ajax/GetAlarmsHistory.aspx?lang=he&mode=1"
-      )
-        .then((result) => result.json())
-        .then((data) => {
-          const json = JSON.parse(
-            fs.readFileSync("channelServer.json", {
-              encoding: "utf8",
-            })
-          );
-
-          data.forEach((alert) => {
-            const timeString = alert.time;
-            const [hours, minutes, seconds] = timeString.split(":");
-
-            const dateString = alert.date;
-            const [day, month, year] = dateString.split(".");
-
-            const givenDate = new Date(
-              year,
-              month - 1,
-              day,
-              hours,
-              minutes,
-              seconds
-            );
-            const currentDate = new Date();
-            if (Math.abs(currentDate - givenDate) <= 4000) {
-              for (let server in json) {
-                if (client.channels.cache.has(json[server].channel)) {
-                  let channel = client.channels.cache.get(json[server].channel);
-                  const embed = new EmbedBuilder()
-                    .setColor("#e8793f")
-                    .setTitle(`התרעת פיקוד העורף ב–${alert.data}`)
-                    .setURL("https://www.oref.org.il//12481-he/Pakar.aspx")
-                    .setAuthor({
-                      name: "פיקוד העורף",
-                      iconURL:
-                        "https://cdn.discordapp.com/attachments/776039568163995649/1094287528451915906/Pakar.png",
-                      url: "https://www.oref.org.il//12481-he/Pakar.aspx",
-                    })
-                    .setDescription(alert.category_desc)
-                    .addFields({
-                      name: `התרעה של פיקוד העורף בשעה–${alert.time}`,
-                      value: alert.date,
-                    });
-                  channel.send({ embeds: [embed] });
+      await fetch("https://www.oref.org.il/WarningMessages/alert/alerts.json", {
+        method: "GET",
+        headers: {
+          Accept: "*/*",
+          "Accept-Encoding": "gzip, deflate, br",
+          "Accept-Language": "en-US,en;q=0.5",
+          Connection: "keep-alive",
+          "Content-Type": "application/json;charset=utf-8",
+          "If-Modified-Since": new Date().toUTCString(),
+          "If-None-Match": 'W/"d3179e1a1f6bd91:0"',
+          Referer: "https://www.oref.org.il//12481-he/Pakar.aspx",
+          "sec-ch-ua":
+            '"Chromium";v="112", "Brave";v="112", "Not:A-Brand";v="99"',
+          "sec-ch-ua-mobile": "?0",
+          "sec-ch-ua-platform": '"Windows"',
+          "Sec-Fetch-Dest": "empty",
+          "Sec-Fetch-Mode": "cors",
+          "Sec-Fetch-Site": "same-origin",
+          "Sec-GPC": "1",
+          "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36",
+          "X-Requested-With": "XMLHttpRequest",
+        },
+      })
+        .then((result) =>
+          result.status === 304
+            ? undefined
+            : (async () => {
+                const text = await result.text();
+                try {
+                  return JSON.parse(text);
+                } catch (error) {
+                  return undefined;
                 }
+              })()
+        )
+        .then((alert) => {
+          if (alert !== undefined) {
+            const json = JSON.parse(
+              fs.readFileSync("channelServer.json", {
+                encoding: "utf8",
+              })
+            );
+            for (let server in json) {
+              if (client.channels.cache.has(json[server].channel)) {
+                let channel = client.channels.cache.get(json[server].channel);
+                const embed = new EmbedBuilder()
+                  .setColor("#e8793f")
+                  .setTitle(`התרעת פיקוד העורף ב–${alert.data}`)
+                  .setURL("https://www.oref.org.il//12481-he/Pakar.aspx")
+                  .setAuthor({
+                    name: "פיקוד העורף",
+                    iconURL:
+                      "https://cdn.discordapp.com/attachments/776039568163995649/1094287528451915906/Pakar.png",
+                    url: "https://www.oref.org.il//12481-he/Pakar.aspx",
+                  })
+                  .setDescription(alert.category_desc)
+                  .addFields({
+                    name: `התרעה של פיקוד העורף בשעה–${alert.time}`,
+                    value: alert.date,
+                  });
+                channel.send({ embeds: [embed] });
               }
             }
-          });
+          }
         });
     });
   },
