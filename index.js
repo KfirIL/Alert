@@ -58,6 +58,7 @@ client.on("ready", async () => {
                   seconds
                 );
                 const currentDate = new Date();
+                console.log(Math.abs(currentDate - givenDate));
                 if (Math.abs(currentDate - givenDate) <= 4000) {
                   const embed = new EmbedBuilder()
                     .setColor("#e8793f")
