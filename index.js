@@ -7,6 +7,7 @@ const {
   GatewayIntentBits,
   EmbedBuilder,
   Events,
+  ActivityType,
 } = require("discord.js");
 
 const client = new Client({
@@ -21,7 +22,10 @@ const client = new Client({
 
 client.on("ready", async () => {
   console.log(`Logged in as ${client.user.tag}!`);
-  client.user.setStatus("online");
+  client.user.setActivity({
+    name: `תשעה מיליון איש`,
+    type: ActivityType.Watching,
+  });
 
   setInterval(async () => {
     await fetch(
