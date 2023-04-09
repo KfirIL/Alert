@@ -21,48 +21,29 @@ module.exports = {
       "הערוץ-בו-תרצה-לקבל-התרעות"
     ).id;
 
-    fs.readFile("channelServer.json", "utf8", (err, data) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-      // Parse the JSON data
-      let jsonData;
-      try {
-        jsonData = JSON.parse(data);
-      } catch (e) {
-        // Handle the case where the data is not valid JSON
-        console.error("Error parsing JSON:", e);
-        return;
-      }
+    const jsonData = JSON.parse(
+      fs.readFileSync("channelServer.json", {
+        encoding: "utf8",
+      })
+    );
 
-      // Check if the server already exists
-      if (jsonData[serverID]) {
-        // Update the channel ID for the existing server
-        jsonData[serverID].channel = channelID;
-        console.log(`Channel ID updated for server ${serverID}`);
-      } else {
-        // Generate a new object with the new data
-        const newObj = {
-          [serverID]: {
-            channel: channelID,
-          },
-        };
+    if (jsonData[serverID]) {
+      jsonData[serverID].channel = channelID;
+      console.log(`Channel ID updated for server ${serverID}`);
+    } else {
+      const newObj = {
+        [serverID]: {
+          channel: channelID,
+        },
+      };
 
-        // Add the new object to the existing JSON object
-        Object.assign(jsonData, newObj);
-      }
+      Object.assign(jsonData, newObj);
+    }
 
-      // Stringify the modified data
-      const newData = JSON.stringify(jsonData);
+    const newData = JSON.stringify(jsonData);
 
-      // Write the stringified data back to the file
-      fs.writeFile("channelServer.json", newData, "utf8", (err) => {
-        if (err) {
-          console.error(err);
-          return;
-        }
-      });
+    fs.writeFileSync("channelServer.json", {
+      data: newData,
     });
 
     await interaction.reply({ content: "החדר הוגדר בהצלחה", ephemeral: true });
