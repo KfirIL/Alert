@@ -5,4 +5,4 @@ FROM node:latest
 WORKDIR /app
 
 # Start the app
-CMD ["bash", "-c", "git pull && npm install && node ."]
+CMD ["bash", "-c", "git credential-store --file /app/.git-credentials store && git pull && npm install && node ."]
