@@ -28,93 +28,91 @@ client.on("ready", async () => {
     type: ActivityType.Watching,
   });
 
-  setInterval(async () => {
-    let etag;
-    await fetch("https://www.oref.org.il/WarningMessages/alert/alerts.json", {
-      method: "GET",
-      headers: {
-        "X-Requested-With": "XMLHttpRequest",
-        "Content-Type": "application/json;charset=utf-8",
-        Referer: "https://www.oref.org.il//12481-he/Pakar.aspx",
-        "If-Modified-Since": etag ? new Date().toUTCString() : undefined,
-        "If-None-Match": etag ? etag : undefined,
-      },
-    })
-      .then((result) => {
-        etag = result.headers.get("etag");
-        const text = result.text()[0];
-        try {
-          return JSON.parse(text);
-        } catch (error) {
-          return undefined;
-        }
+  setInterval(
+    async () =>
+      await fetch("https://www.oref.org.il/WarningMessages/alert/alerts.json", {
+        method: "GET",
+        headers: {
+          "X-Requested-With": "XMLHttpRequest",
+          "Content-Type": "application/json;charset=utf-8",
+          Referer: "https://www.oref.org.il//12481-he/Pakar.aspx",
+        },
       })
-      .then((alert) => {
-        if (alert !== undefined) {
+        .then(async (result) => {
+          const text = await result.text()[0];
+          try {
+            return JSON.parse(text);
+          } catch (error) {
+            return undefined;
+          }
+        })
+        .then((alert) => {
+          if (alert !== undefined) {
+            let shit = fs.readFileSync("./errorsandsomeshit.txt", {
+              encoding: "utf8",
+            });
+            shit += alert;
+            fs.writeFileSync("./errorsandsomeshit.txt", shit, "utf8");
+
+            const json = JSON.parse(
+              fs.readFileSync("channelServer.json", {
+                encoding: "utf8",
+              })
+            );
+            for (let server in json) {
+              if (client.channels.cache.has(json[server].channel)) {
+                let channel = client.channels.cache.get(json[server].channel);
+                const embed = new EmbedBuilder()
+                  .setColor("#e8793f")
+                  .setTitle(`התרעת פיקוד העורף ב${alert.data}`)
+                  .setDescription(alert.category_desc)
+                  .setURL("https://www.oref.org.il//12481-he/Pakar.aspx")
+                  .setAuthor({
+                    name: "פיקוד העורף",
+                    iconURL:
+                      "https://cdn.discordapp.com/attachments/776039568163995649/1094287528451915906/Pakar.png",
+                    url: "https://www.oref.org.il//12481-he/Pakar.aspx",
+                  })
+                  .setThumbnail(
+                    "https://cdn.discordapp.com/attachments/776039568163995649/1094287528451915906/Pakar.png"
+                  )
+                  .addFields(
+                    {
+                      name: `התרעה של פיקוד העורף בשעה${alert.time}`,
+                      value: "",
+                    },
+                    { name: "\u200B", value: "\u200B" }
+                  );
+                channel.send({
+                  embeds: [embed],
+                  content: client.guilds.cache
+                    .get(server)
+                    .roles.cache.has(json[server].role)
+                    ? client.guilds.cache
+                        .get("1023172392828272690")
+                        .roles.cache.get("1023172392828272690").name !==
+                      "@everyone"
+                      ? `<@&${json[server].role}>`
+                      : "@everyone"
+                    : undefined,
+                });
+              }
+            }
+          }
+        })
+        .catch((error) => {
           let shit = fs.readFileSync("./errorsandsomeshit.txt", {
             encoding: "utf8",
           });
-          shit += alert;
+
+          shit += error;
+
           fs.writeFileSync("./errorsandsomeshit.txt", shit, "utf8");
 
-          const json = JSON.parse(
-            fs.readFileSync("channelServer.json", {
-              encoding: "utf8",
-            })
-          );
-          for (let server in json) {
-            if (client.channels.cache.has(json[server].channel)) {
-              let channel = client.channels.cache.get(json[server].channel);
-              const embed = new EmbedBuilder()
-                .setColor("#e8793f")
-                .setTitle(`התרעת פיקוד העורף ב${alert.data}`)
-                .setDescription(alert.category_desc)
-                .setURL("https://www.oref.org.il//12481-he/Pakar.aspx")
-                .setAuthor({
-                  name: "פיקוד העורף",
-                  iconURL:
-                    "https://cdn.discordapp.com/attachments/776039568163995649/1094287528451915906/Pakar.png",
-                  url: "https://www.oref.org.il//12481-he/Pakar.aspx",
-                })
-                .setThumbnail(
-                  "https://cdn.discordapp.com/attachments/776039568163995649/1094287528451915906/Pakar.png"
-                )
-                .addFields(
-                  {
-                    name: `התרעה של פיקוד העורף בשעה${alert.time}`,
-                    value: "",
-                  },
-                  { name: "\u200B", value: "\u200B" }
-                );
-              channel.send({
-                embeds: [embed],
-                content: client.guilds.cache
-                  .get(server)
-                  .roles.cache.has(json[server].role)
-                  ? client.guilds.cache
-                      .get("1023172392828272690")
-                      .roles.cache.get("1023172392828272690").name !==
-                    "@everyone"
-                    ? `<@&${json[server].role}>`
-                    : "@everyone"
-                  : undefined,
-              });
-            }
-          }
-        }
-      })
-      .catch((error) => {
-        let shit = fs.readFileSync("./errorsandsomeshit.txt", {
-          encoding: "utf8",
-        });
-
-        shit += error;
-
-        fs.writeFileSync("./errorsandsomeshit.txt", shit, "utf8");
-
-        console.log(error);
-      });
-  }, 2000);
+          console.log(error);
+        }),
+    2000 // Interval Miliseconds
+  );
 });
 
 client.on(Events.InteractionCreate, async (interaction) =>
