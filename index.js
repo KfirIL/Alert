@@ -33,25 +33,11 @@ client.on("ready", async () => {
     await fetch("https://www.oref.org.il/WarningMessages/alert/alerts.json", {
       method: "GET",
       headers: {
-        Accept: "*/*",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Accept-Language": "en-US,en;q=0.5",
-        Connection: "keep-alive",
+        "X-Requested-With": "XMLHttpRequest",
         "Content-Type": "application/json;charset=utf-8",
+        Referer: "https://www.oref.org.il//12481-he/Pakar.aspx",
         "If-Modified-Since": etag ? new Date().toUTCString() : undefined,
         "If-None-Match": etag ? etag : undefined,
-        Referer: "https://www.oref.org.il//12481-he/Pakar.aspx",
-        "sec-ch-ua":
-          '"Chromium";v="112", "Brave";v="112", "Not:A-Brand";v="99"',
-        "sec-ch-ua-mobile": "?0",
-        "sec-ch-ua-platform": '"Windows"',
-        "Sec-Fetch-Dest": "empty",
-        "Sec-Fetch-Mode": "cors",
-        "Sec-Fetch-Site": "same-origin",
-        "Sec-GPC": "1",
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36",
-        "X-Requested-With": "XMLHttpRequest",
       },
     })
       .then((result) => {
@@ -64,15 +50,13 @@ client.on("ready", async () => {
         }
       })
       .then((alert) => {
-        console.log(alert);
         if (alert !== undefined) {
           let shit = fs.readFileSync("./errorsandsomeshit.txt", {
             encoding: "utf8",
           });
-
           shit += alert;
-
           fs.writeFileSync("./errorsandsomeshit.txt", shit, "utf8");
+
           const json = JSON.parse(
             fs.readFileSync("channelServer.json", {
               encoding: "utf8",
