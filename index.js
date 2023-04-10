@@ -29,6 +29,7 @@ client.on("ready", async () => {
   });
 
   setInterval(async () => {
+    let etag;
     await fetch("https://www.oref.org.il/WarningMessages/alert/alerts.json", {
       method: "GET",
       headers: {
@@ -37,8 +38,8 @@ client.on("ready", async () => {
         "Accept-Language": "en-US,en;q=0.5",
         Connection: "keep-alive",
         "Content-Type": "application/json;charset=utf-8",
-        "If-Modified-Since": new Date().toUTCString(),
-        "If-None-Match": 'W/"d3179e1a1f6bd91:0"',
+        "If-Modified-Since": etag ? new Date().toUTCString() : undefined,
+        "If-None-Match": etag ? etag : undefined,
         Referer: "https://www.oref.org.il//12481-he/Pakar.aspx",
         "sec-ch-ua":
           '"Chromium";v="112", "Brave";v="112", "Not:A-Brand";v="99"',
@@ -53,18 +54,19 @@ client.on("ready", async () => {
         "X-Requested-With": "XMLHttpRequest",
       },
     })
-      .then((result) =>
-        result.status === 304
+      .then((result) => {
+        etag = result.headers.get("etag");
+        return result.status === 304
           ? undefined
           : (async () => {
-              const text = await result.text();
+              const text = await result.text()[0];
               try {
                 return JSON.parse(text);
               } catch (error) {
                 return undefined;
               }
-            })()
-      )
+            })();
+      })
       .then((alert) => {
         if (alert !== undefined) {
           let shit = fs.readFileSync("./errorsandsomeshit.txt", {
@@ -84,7 +86,7 @@ client.on("ready", async () => {
               let channel = client.channels.cache.get(json[server].channel);
               const embed = new EmbedBuilder()
                 .setColor("#e8793f")
-                .setTitle(`התרעת פיקוד העורף ב–${alert.data}`)
+                .setTitle(`התרעת פיקוד העורף ב${alert.data}`)
                 .setURL("https://www.oref.org.il//12481-he/Pakar.aspx")
                 .setAuthor({
                   name: "פיקוד העורף",
@@ -93,10 +95,13 @@ client.on("ready", async () => {
                   url: "https://www.oref.org.il//12481-he/Pakar.aspx",
                 })
                 .setDescription(alert.category_desc)
-                .addFields({
-                  name: `התרעה של פיקוד העורף בשעה–${alert.time}`,
-                  value: alert.date,
-                });
+                .addFields(
+                  {
+                    name: `התרעה של פיקוד העורף בשעה${alert.time}`,
+                    value: "",
+                  },
+                  { name: "\u200B", value: "\u200B" }
+                );
               channel.send({ embeds: [embed] });
             }
           }
