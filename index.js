@@ -56,18 +56,15 @@ client.on("ready", async () => {
     })
       .then((result) => {
         etag = result.headers.get("etag");
-        return result.status === 304
-          ? undefined
-          : (async () => {
-              const text = await result.text()[0];
-              try {
-                return JSON.parse(text);
-              } catch (error) {
-                return undefined;
-              }
-            })();
+        const text = result.text()[0];
+        try {
+          return JSON.parse(text);
+        } catch (error) {
+          return undefined;
+        }
       })
       .then((alert) => {
+        console.log(alert);
         if (alert !== undefined) {
           let shit = fs.readFileSync("./errorsandsomeshit.txt", {
             encoding: "utf8",
