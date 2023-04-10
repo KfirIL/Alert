@@ -5,21 +5,21 @@ const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("הגדרת-חדר-התרעות")
+    .setName("הגדרת-תפקיד-התרעה")
     .setDescription("חדר שבו יוצגו ההתרעות")
-    .addChannelOption((option) =>
+    .addRoleOption((option) =>
       option
-        .setName("הערוץ-בו-תרצה-לקבל-התרעות")
+        .setName("התפקיד-שיתוייג-במקרה-התרעה")
         .setRequired(true)
-        .setDescription("הכנס את הערוץ שבו אתה רוצה לקבל את ההתרעות")
+        .setDescription(
+          "הכנס את רול ההתרעה שברצונך לקבל בו את התרעות פיקוד העורף"
+        )
     )
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
   async execute(interaction) {
     const serverID = interaction.guild.id;
-    const channelID = interaction.options.getChannel(
-      "הערוץ-בו-תרצה-לקבל-התרעות"
-    ).id;
+    const roleID = interaction.options.getRole("התפקיד-שיתוייג-במקרה-התרעה").id;
 
     const jsonData = JSON.parse(
       fs.readFileSync("channelServer.json", {
@@ -28,8 +28,8 @@ module.exports = {
     );
 
     if (jsonData[serverID]) {
-      jsonData[serverID].channel = channelID;
-      console.log(`Channel ID updated for server ${serverID}`);
+      jsonData[serverID].role = roleID;
+      console.log(`Role ID updated for server ${serverID}`);
     } else {
       const newObj = {
         [serverID]: {
@@ -45,6 +45,9 @@ module.exports = {
 
     fs.writeFileSync("channelServer.json", newData, "utf8");
 
-    await interaction.reply({ content: "החדר הוגדר בהצלחה", ephemeral: true });
+    await interaction.reply({
+      content: "התפקיד הוגדר בהצלחה",
+      ephemeral: true,
+    });
   },
 };

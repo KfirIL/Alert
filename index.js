@@ -24,7 +24,7 @@ const client = new Client({
 client.on("ready", async () => {
   console.log(`Logged in as ${client.user.tag}!`);
   client.user.setActivity({
-    name: "תשעה מיליון אנשים",
+    name: "תשעה מיליון איש",
     type: ActivityType.Watching,
   });
 
@@ -87,6 +87,7 @@ client.on("ready", async () => {
               const embed = new EmbedBuilder()
                 .setColor("#e8793f")
                 .setTitle(`התרעת פיקוד העורף ב${alert.data}`)
+                .setDescription(alert.category_desc)
                 .setURL("https://www.oref.org.il//12481-he/Pakar.aspx")
                 .setAuthor({
                   name: "פיקוד העורף",
@@ -94,7 +95,9 @@ client.on("ready", async () => {
                     "https://cdn.discordapp.com/attachments/776039568163995649/1094287528451915906/Pakar.png",
                   url: "https://www.oref.org.il//12481-he/Pakar.aspx",
                 })
-                .setDescription(alert.category_desc)
+                .setThumbnail(
+                  "https://cdn.discordapp.com/attachments/776039568163995649/1094287528451915906/Pakar.png"
+                )
                 .addFields(
                   {
                     name: `התרעה של פיקוד העורף בשעה${alert.time}`,
@@ -102,7 +105,19 @@ client.on("ready", async () => {
                   },
                   { name: "\u200B", value: "\u200B" }
                 );
-              channel.send({ embeds: [embed] });
+              channel.send({
+                embeds: [embed],
+                content: client.guilds.cache
+                  .get(server)
+                  .roles.cache.has(json[server].role)
+                  ? client.guilds.cache
+                      .get("1023172392828272690")
+                      .roles.cache.get("1023172392828272690").name !==
+                    "@everyone"
+                    ? `<@&${json[server].role}>`
+                    : "@everyone"
+                  : undefined,
+              });
             }
           }
         }
