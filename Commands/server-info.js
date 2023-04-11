@@ -16,11 +16,14 @@ module.exports = {
     .setDescription("מציג את הגדרות השרת הקיימות")
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
   async execute(interaction) {
-    const serverID = interaction.guild.id;
+    const serverId = interaction.guild.id;
     const json = JSON.parse(fs.readFileSync("channelServer.json", "utf8"));
-    if (!json[serverID]) {
+    if (!json[serverId]) {
       const newObj = {
-        [serverID]: {},
+        [serverId]: {
+          channel: "123",
+          role: "123",
+        },
       };
       Object.assign(json, newObj);
 
@@ -29,10 +32,10 @@ module.exports = {
       fs.writeFileSync("channelServer.json", newData, "utf8");
     }
     const isChannel = interaction.guild.channels.cache.has(
-      json[serverID].channel
+      json[serverId].channel
     );
-    const isRole = interaction.guild.roles.cache.has(json[serverID].role);
-    const role = interaction.guild.roles.cache.get(json[serverID].role);
+    const isRole = interaction.guild.roles.cache.has(json[serverId].role);
+    const role = interaction.guild.roles.cache.get(json[serverId].role);
     const embed = new EmbedBuilder() // The embed
       .setColor("e8793f")
       .setTitle("הגדרות הקיימות בשרת זה")
@@ -49,14 +52,14 @@ module.exports = {
       .addFields(
         {
           name: "החדר בו יישלחו התרעות",
-          value: isChannel ? `<#${json[serverID].channel}>` : "לא הוגדר",
+          value: isChannel ? `<#${json[serverId].channel}>` : "לא הוגדר",
           inline: true,
         },
         {
           name: "תפקיד שיתוייג בעת שליחת התרעה",
           value: isRole
             ? role.name !== "@everyone"
-              ? `<@&${json[serverID].role}>`
+              ? `<@&${json[serverId].role}>`
               : "@everyone"
             : "לא הוגדר",
           inline: true,
@@ -64,8 +67,9 @@ module.exports = {
         { name: "\u200B", value: "\u200B" }
       )
       .setFooter({
-        text: "התוכן לא מהווה תחליף להתרעות בזמן אמת | על מנת לקבל התרעות מדוייקות נא להיכנס לאתר פיקוד העורף.",
-      });
+        text: "התוכן לא מהווה תחליף להתרעות בזמן אמת. לשם קבלת התרעות מדוייקות נא להיכנס לאתר פיקוד העורף.",
+      })
+      .setTimestamp(new Date());
 
     const reset = new ActionRowBuilder() // Reset All Button
       .addComponents(

@@ -16,8 +16,8 @@ module.exports = {
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
   async execute(interaction) {
-    const serverID = interaction.guild.id;
-    const channelID = interaction.options.getChannel(
+    const serverId = interaction.guild.id;
+    const channelId = interaction.options.getChannel(
       "הערוץ-בו-תרצה-לקבל-התרעות"
     ).id;
 
@@ -27,14 +27,14 @@ module.exports = {
       })
     );
 
-    if (jsonData[serverID]) {
-      jsonData[serverID].channel = channelID;
-      console.log(`Channel ID updated for server ${serverID}`);
+    if (jsonData[serverId]) {
+      jsonData[serverId].channel = channelId;
+      console.log(`Channel Id updated for server ${serverId}`);
     } else {
       const newObj = {
-        [serverID]: {
-          ...jsonData[serverID],
-          channel: channelID,
+        [serverId]: {
+          ...jsonData[serverId],
+          channel: channelId,
         },
       };
 

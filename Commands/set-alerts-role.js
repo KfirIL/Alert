@@ -18,8 +18,8 @@ module.exports = {
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
   async execute(interaction) {
-    const serverID = interaction.guild.id;
-    const roleID = interaction.options.getRole("התפקיד-שיתוייג-במקרה-התרעה").id;
+    const serverId = interaction.guild.id;
+    const roleId = interaction.options.getRole("התפקיד-שיתוייג-במקרה-התרעה").id;
 
     const jsonData = JSON.parse(
       fs.readFileSync("channelServer.json", {
@@ -27,14 +27,14 @@ module.exports = {
       })
     );
 
-    if (jsonData[serverID]) {
-      jsonData[serverID].role = roleID;
-      console.log(`Role ID updated for server ${serverID}`);
+    if (jsonData[serverId]) {
+      jsonData[serverId].role = roleId;
+      console.log(`Role Id updated for server ${serverId}`);
     } else {
       const newObj = {
-        [serverID]: {
-          ...jsonData[serverID],
-          role: roleID,
+        [serverId]: {
+          ...jsonData[serverId],
+          role: roleId,
         },
       };
 

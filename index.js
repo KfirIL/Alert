@@ -25,8 +25,23 @@ client.on("ready", async () => {
   console.log(`Logged in as ${client.user.tag}!`);
   client.user.setActivity({
     name: process.env.STATUS,
-    type: ActivityType.Watching,
+    type: parseInt(process.env.STATUS_CATEGORY),
   });
+
+  let json = JSON.parse(
+    fs.readFileSync("channelServer.json", {
+      encoding: "utf8",
+    })
+  );
+
+  for (let server in json) {
+    if (client.guilds.cache.has(server)) {
+      delete json[server];
+
+      let newData = JSON.stringify(json);
+      fs.writeFileSync("channelServer.json", newData, "utf8");
+    }
+  }
 
   setInterval(
     async () =>
@@ -54,11 +69,12 @@ client.on("ready", async () => {
             shit += alert;
             fs.writeFileSync("./errorsandsomeshit.txt", shit, "utf8");
 
-            const json = JSON.parse(
+            let json = JSON.parse(
               fs.readFileSync("channelServer.json", {
                 encoding: "utf8",
               })
             );
+
             for (let server in json) {
               if (client.channels.cache.has(json[server].channel)) {
                 let channel = client.channels.cache.get(json[server].channel);
@@ -78,23 +94,23 @@ client.on("ready", async () => {
                   )
                   .addFields(
                     {
-                      name: `התרעה של פיקוד העורף בשעה${alert.time}`,
-                      value: "",
+                      name: `התרעה של פיקוד העורף בשעה ${alert.time}`,
+                      value: "נא לפעול לפי הנחיות פיקוד העורף",
                     },
                     { name: "\u200B", value: "\u200B" }
                   )
                   .setFooter({
-                    text: "התוכן לא מהווה תחליף להתרעות בזמן אמת | על מנת לקבל התרעות מדוייקות נא להיכנס לאתר פיקוד העורף.",
-                  });
+                    text: "התוכן לא מהווה תחליף להתרעות בזמן אמת. לשם קבלת התרעות מדוייקות נא להיכנס לאתר פיקוד העורף.",
+                  })
+                  .setTimestamp(new Date(alert.alertDate));
                 channel.send({
                   embeds: [embed],
                   content: client.guilds.cache
                     .get(server)
                     .roles.cache.has(json[server].role)
                     ? client.guilds.cache
-                        .get("1023172392828272690")
-                        .roles.cache.get("1023172392828272690").name !==
-                      "@everyone"
+                        .get(server)
+                        .roles.cache.get(json[server].role).name !== "@everyone"
                       ? `<@&${json[server].role}>`
                       : "@everyone"
                     : undefined,
