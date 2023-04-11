@@ -15,7 +15,7 @@ module.exports = {
   async execute(interaction) {
     const json = JSON.parse(fs.readFileSync("channelServer.json", "utf8"));
     const serverId = interaction.guild.id;
-    if (!json[serverId]) {
+    if (json[serverId] === undefined) {
       const newObj = {
         [serverId]: {
           channel: "123",

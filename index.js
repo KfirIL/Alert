@@ -35,7 +35,7 @@ client.on("ready", async () => {
   );
 
   for (let server in json) {
-    if (client.guilds.cache.has(server)) {
+    if (!client.guilds.cache.has(server)) {
       delete json[server];
 
       let newData = JSON.stringify(json);
