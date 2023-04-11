@@ -79,7 +79,7 @@ client.on("ready", async () => {
               if (client.channels.cache.has(json[server].channel)) {
                 let channel = client.channels.cache.get(json[server].channel);
                 const embed = new EmbedBuilder()
-                  .setColor("#e8793f")
+                  .setColor("#f39a20")
                   .setTitle(`התרעת פיקוד העורף ב${alert.data}`)
                   .setDescription(alert.category_desc)
                   .setURL("https://www.oref.org.il//12481-he/Pakar.aspx")
@@ -100,7 +100,7 @@ client.on("ready", async () => {
                     { name: "\u200B", value: "\u200B" }
                   )
                   .setFooter({
-                    text: "התוכן לא מהווה תחליף להתרעות בזמן אמת. לשם קבלת התרעות מדוייקות נא להיכנס לאתר פיקוד העורף.",
+                    text: "התוכן לא מהווה תחליף להתרעות בזמן אמת. בכדי לקבל התרעות מדוייקות נא להיכנס לאתר פיקוד העורף.",
                   })
                   .setTimestamp(new Date(alert.alertDate));
                 channel.send({

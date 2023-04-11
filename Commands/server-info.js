@@ -37,7 +37,7 @@ module.exports = {
     const isRole = interaction.guild.roles.cache.has(json[serverId].role);
     const role = interaction.guild.roles.cache.get(json[serverId].role);
     const embed = new EmbedBuilder() // The embed
-      .setColor("e8793f")
+      .setColor("#f39a20")
       .setTitle("הגדרות הקיימות בשרת זה")
       .setAuthor({
         name: "התרעות פיקוד העורף",
@@ -67,7 +67,7 @@ module.exports = {
         { name: "\u200B", value: "\u200B" }
       )
       .setFooter({
-        text: "התוכן לא מהווה תחליף להתרעות בזמן אמת. לשם קבלת התרעות מדוייקות נא להיכנס לאתר פיקוד העורף.",
+        text: "התוכן לא מהווה תחליף להתרעות בזמן אמת. בכדי לקבל התרעות מדוייקות נא להיכנס לאתר פיקוד העורף.",
       })
       .setTimestamp(new Date());
 
