@@ -34,7 +34,7 @@ module.exports = {
       const newObj = {
         [serverID]: {
           ...jsonData[serverID],
-          role: roleID,
+          channel: channelID,
         },
       };
 

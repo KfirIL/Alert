@@ -82,7 +82,10 @@ client.on("ready", async () => {
                       value: "",
                     },
                     { name: "\u200B", value: "\u200B" }
-                  );
+                  )
+                  .setFooter({
+                    text: "התוכן לא מהווה תחליף להתרעות בזמן אמת | על מנת לקבל התרעות מדוייקות נא להיכנס לאתר פיקוד העורף.",
+                  });
                 channel.send({
                   embeds: [embed],
                   content: client.guilds.cache
