@@ -1,7 +1,7 @@
 require("dotenv").config();
 
 const fs = require("node:fs");
-const { registerCommands } = require("./reg.js");
+const { registerCommands, registerButtons } = require("./reg.js");
 
 const {
   Client,
@@ -118,8 +118,9 @@ client.on("ready", async () => {
   );
 });
 
-client.on(Events.InteractionCreate, async (interaction) =>
-  registerCommands(interaction)
-);
+client.on(Events.InteractionCreate, async (interaction) => {
+  registerButtons(interaction);
+  registerCommands(interaction);
+});
 
 client.login(process.env.DISCORD_TOKEN);

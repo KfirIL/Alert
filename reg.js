@@ -48,4 +48,27 @@ async function registerCommands(interaction) {
   }
 }
 
-module.exports = { registerCommands };
+function writeDataToFile(data) {
+  const newData = JSON.stringify(data);
+  fs.writeFileSync("channelServer.json", newData, "utf8");
+}
+
+async function registerButtons(interaction) {
+  if (interaction.isButton()) {
+    let text;
+    switch (interaction.customId) {
+      case "reset":
+        let json = JSON.parse(fs.readFileSync("channelServer.json", "utf8"));
+        delete json[interaction.guild.id];
+        writeDataToFile(json);
+        text = "כל ההגדרות אופסו בהצלחה.";
+        break;
+    }
+    await interaction.reply({
+      content: text,
+      ephemeral: true,
+    });
+  }
+}
+
+module.exports = { registerCommands, registerButtons };
