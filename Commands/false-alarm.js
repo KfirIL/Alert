@@ -66,7 +66,7 @@ module.exports = {
       )
       .addFields(
         {
-          name: `התרעה של פיקוד העורף בשעה ${alert.time}`,
+          name: `התרעת פיקוד העורף בשעה ${alert.time}`,
           value: "נא לפעול לפי הנחיות פיקוד העורף",
         },
         { name: "\u200B", value: "\u200B" }
