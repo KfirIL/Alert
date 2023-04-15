@@ -8,7 +8,7 @@ module.exports = {
     let startTime = new Date().getTime();
     await interaction.reply(
       `🏓 | Latency is: **${
-        interaction.createdTimestamp.getTime() - startTime
+        startTime - new Date(interaction.createdTimestamp).getTime()
       }ms.**`
     );
   },
