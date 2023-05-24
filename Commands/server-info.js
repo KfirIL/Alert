@@ -71,17 +71,33 @@ module.exports = {
       })
       .setTimestamp(new Date());
 
-    const reset = new ActionRowBuilder() // Reset All Button
+    const resetAll = new ActionRowBuilder() // Reset All Button
       .addComponents(
         new ButtonBuilder()
-          .setCustomId("reset")
+          .setCustomId("resetall")
           .setLabel("אפס את כל ההגדרות")
+          .setStyle(ButtonStyle.Danger)
+      );
+
+    const resetRoom = new ActionRowBuilder() // Reset All Button
+      .addComponents(
+        new ButtonBuilder()
+          .setCustomId("resetroom")
+          .setLabel("אפס את חדר ההתרעות")
+          .setStyle(ButtonStyle.Danger)
+      );
+
+    const resetRole = new ActionRowBuilder() // Reset All Button
+      .addComponents(
+        new ButtonBuilder()
+          .setCustomId("resetrole")
+          .setLabel("אפס את תפקיד ההתרעות")
           .setStyle(ButtonStyle.Danger)
       );
 
     await interaction.reply({
       embeds: [embed],
-      components: [reset],
+      components: [resetAll, resetRoom, resetRole],
       ephemeral: true,
     });
   },

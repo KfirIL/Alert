@@ -28,18 +28,14 @@ module.exports = {
 
       fs.writeFileSync("channelServer.json", newData, "utf8");
     }
-    const timeString = new Date().toLocaleTimeString("en-US", {
-      hour12: false,
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    });
+
     const alert = {
-      data: "[אזור ניסיון]",
-      time: timeString,
-      alertDate: new Date(),
-      category_desc: "[סוג ההתרעה]",
+      cities: ["עיר ניסיון א", "עיר ניסיון ב", "עיר ניסיון ג"],
+      isDrill: false,
+      threat: 0,
+      time: new Date().getTime(),
     };
+
     const channel = interaction.guild.channels.cache.has(json[serverId].channel)
       ? interaction.guild.channels.cache.get(json[serverId].channel)
       : undefined;
@@ -52,8 +48,8 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setColor("#f39a20")
-      .setTitle(`התרעת פיקוד העורף ב${alert.data}`)
-      .setDescription(alert.category_desc)
+      .setTitle(`התרעת פיקוד העורף ב־${alert.cities.length} ערים`)
+      .setDescription("היכנסו למרחב המוגן ושהו בו 10 דקות")
       .setURL("https://www.oref.org.il//12481-he/Pakar.aspx")
       .setAuthor({
         name: "פיקוד העורף",
@@ -64,17 +60,16 @@ module.exports = {
       .setThumbnail(
         "https://cdn.discordapp.com/attachments/776039568163995649/1094287528451915906/Pakar.png"
       )
-      .addFields(
-        {
-          name: `התרעת פיקוד העורף בשעה ${alert.time}`,
-          value: "נא לפעול לפי הנחיות פיקוד העורף",
-        },
-        { name: "\u200B", value: "\u200B" }
-      )
       .setFooter({
         text: "התוכן לא מהווה תחליף להתרעות בזמן אמת. כדי לקבל התרעות מדוייקות נא להיכנס לאתר פיקוד העורף.",
       })
-      .setTimestamp(alert.alertDate);
+      .setTimestamp(new Date(alert.time));
+
+    for (let city in alert.cities) {
+      embed.addFields({ name: alert.cities[city], value: "\u2800" });
+    }
+    embed.addFields({ name: "\u200B", value: "\u200B" });
+
     channel.send({
       embeds: [embed],
       content: interaction.guild.roles.cache.has(json[serverId].role)

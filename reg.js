@@ -55,13 +55,23 @@ function writeDataToFile(data) {
 
 async function registerButtons(interaction) {
   if (interaction.isButton()) {
+    let json = JSON.parse(fs.readFileSync("channelServer.json", "utf8"));
     let text;
     switch (interaction.customId) {
-      case "reset":
-        let json = JSON.parse(fs.readFileSync("channelServer.json", "utf8"));
+      case "resetall":
         delete json[interaction.guild.id];
         writeDataToFile(json);
         text = "כל ההגדרות אופסו בהצלחה.";
+        break;
+
+      case "resetroom":
+        json[interaction.guild.id].channel = "";
+        text = "ההגדרה אופסה בהצלחה";
+        break;
+
+      case "resetrole":
+        json[interaction.guild.id].role = "";
+        text = "ההגדרה אופסה בהצלחה";
         break;
     }
     await interaction.reply({

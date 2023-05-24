@@ -2,13 +2,15 @@ require("dotenv").config();
 
 const fs = require("node:fs");
 const { registerCommands, registerButtons } = require("./reg.js");
+const WebSocket = require("ws");
+const WEBSOCKET_URL = "wss://ws.tzevaadom.co.il:8443/socket?platform=WEB";
+const NOTIFICATIONS_API_URL = "https://api.tzevaadom.co.il/notifications";
 
 const {
   Client,
   GatewayIntentBits,
   EmbedBuilder,
   Events,
-  ActivityType,
 } = require("discord.js");
 
 const client = new Client({
@@ -28,11 +30,31 @@ client.on("ready", async () => {
     type: parseInt(process.env.STATUS_CATEGORY),
   });
 
+  const versionR = await fetch("https://api.tzevaadom.co.il/lists-versions");
+  const versionJson = await versionR.json();
+  const version = versionJson.cities;
+
+  fetch("https://www.tzevaadom.co.il/static/cities.json?v=" + version)
+    .then((response) => response.json())
+    .then((data) => {
+      fs.writeFileSync("cities.json", JSON.stringify(data), "utf8");
+    });
+
   let json = JSON.parse(
     fs.readFileSync("channelServer.json", {
       encoding: "utf8",
     })
   );
+
+  const jsonCities = JSON.parse(
+    fs.readFileSync("cities.json", {
+      encoding: "utf8",
+    })
+  );
+
+  const cities = jsonCities.cities;
+  const areas = jsonCities.areas;
+  const countdown = jsonCities.countdown;
 
   for (let server in json) {
     if (!client.guilds.cache.has(server)) {
@@ -42,96 +64,105 @@ client.on("ready", async () => {
       fs.writeFileSync("channelServer.json", newData, "utf8");
     }
   }
+  let ws = new WebSocket(WEBSOCKET_URL, {
+    headers: {
+      origin: "https://www.tzevaadom.co.il",
+    },
+  });
 
-  setInterval(
-    async () =>
-      await fetch("https://www.oref.org.il/WarningMessages/alert/alerts.json", {
-        method: "GET",
-        headers: {
-          "X-Requested-With": "XMLHttpRequest",
-          "Content-Type": "application/json;charset=utf-8",
-          Referer: "https://www.oref.org.il//12481-he/Pakar.aspx",
-        },
+  let isReconnecting = false;
+
+  const handleReconnect = () => {
+    ws.close();
+    if (isReconnecting) return;
+    isReconnecting = true;
+    console.log("ws reconnecting");
+    setTimeout(WSConnection, 5000);
+  };
+  ws.onopen = (e) => {
+    console.log("ws connected");
+    connectionStatus = 0;
+    runBackupAPI = false;
+  };
+  ws.onclose = (e) => {
+    handleReconnect();
+  };
+  ws.onerror = (e) => {
+    handleReconnect();
+  };
+
+  ws.onmessage = async (m) => {
+    if (typeof m.data != "string") return;
+    const { type, data } = JSON.parse(m.data);
+    console.log(type);
+    console.log(data);
+    if (type !== "ALERT") return;
+    const alert = data;
+
+    json = JSON.parse(
+      fs.readFileSync("channelServer.json", {
+        encoding: "utf8",
       })
-        .then(async (result) => {
-          const text = await result.text()[0];
-          try {
-            return JSON.parse(text);
-          } catch (error) {
-            return undefined;
-          }
-        })
-        .then((alert) => {
-          if (alert !== undefined) {
-            let shit = fs.readFileSync("./errorsandsomeshit.txt", {
-              encoding: "utf8",
-            });
-            shit += alert;
-            fs.writeFileSync("./errorsandsomeshit.txt", shit, "utf8");
+    );
 
-            let json = JSON.parse(
-              fs.readFileSync("channelServer.json", {
-                encoding: "utf8",
-              })
-            );
+    const embed = new EmbedBuilder()
+      .setColor("#f39a20")
+      .setTitle(
+        alert.cities.length === 1
+          ? "התרעת פיקוד העורף בעיר אחת"
+          : `התרעת פיקוד העורף ב־${alert.cities.length} ערים`
+      )
+      .setDescription("היכנסו למרחב המוגן ושהו בו 10 דקות")
+      .setURL("https://www.oref.org.il//12481-he/Pakar.aspx")
+      .setAuthor({
+        name: "פיקוד העורף",
+        iconURL:
+          "https://cdn.discordapp.com/attachments/776039568163995649/1094287528451915906/Pakar.png",
+        url: "https://www.oref.org.il//12481-he/Pakar.aspx",
+      })
+      .setThumbnail(
+        "https://cdn.discordapp.com/attachments/776039568163995649/1094287528451915906/Pakar.png"
+      )
+      .addFields(
+        {
+          name: "אזור בארץ:",
+          value: areas[cities[alert.cities[0]].area]["he"],
+        },
+        { name: "\u200B", value: "\u200B" }
+      )
+      .setFooter({
+        text: "התוכן לא מהווה תחליף להתרעות בזמן אמת. כדי לקבל התרעות מדוייקות נא להיכנס לאתר פיקוד העורף.",
+      })
+      .setTimestamp(new Date(alert.time * 1000));
 
-            for (let server in json) {
-              if (client.channels.cache.has(json[server].channel)) {
-                let channel = client.channels.cache.get(json[server].channel);
-                const embed = new EmbedBuilder()
-                  .setColor("#f39a20")
-                  .setTitle(`התרעת פיקוד העורף ב${alert.data}`)
-                  .setDescription(alert.category_desc)
-                  .setURL("https://www.oref.org.il//12481-he/Pakar.aspx")
-                  .setAuthor({
-                    name: "פיקוד העורף",
-                    iconURL:
-                      "https://cdn.discordapp.com/attachments/776039568163995649/1094287528451915906/Pakar.png",
-                    url: "https://www.oref.org.il//12481-he/Pakar.aspx",
-                  })
-                  .setThumbnail(
-                    "https://cdn.discordapp.com/attachments/776039568163995649/1094287528451915906/Pakar.png"
-                  )
-                  .addFields(
-                    {
-                      name: `התרעת פיקוד העורף בשעה ${alert.time}`,
-                      value: "נא לפעול לפי הנחיות פיקוד העורף",
-                    },
-                    { name: "\u200B", value: "\u200B" }
-                  )
-                  .setFooter({
-                    text: "התוכן לא מהווה תחליף להתרעות בזמן אמת. כדי לקבל התרעות מדוייקות נא להיכנס לאתר פיקוד העורף.",
-                  })
-                  .setTimestamp(new Date(alert.alertDate));
-                channel.send({
-                  embeds: [embed],
-                  content: client.guilds.cache
-                    .get(server)
-                    .roles.cache.has(json[server].role)
-                    ? client.guilds.cache
-                        .get(server)
-                        .roles.cache.get(json[server].role).name !== "@everyone"
-                      ? `<@&${json[server].role}>`
-                      : "@everyone"
-                    : undefined,
-                });
-              }
-            }
-          }
-        })
-        .catch((error) => {
-          let shit = fs.readFileSync("./errorsandsomeshit.txt", {
-            encoding: "utf8",
-          });
+    for (let city in alert.cities) {
+      const cityCountDown = cities[alert.cities[city]].countdown;
 
-          shit += error;
+      embed.addFields({
+        name: alert.cities[city],
+        value: `זמן כניסה למרחב מוגן: ${countdown[cityCountDown]["he"]}`,
+        inline: true,
+      });
+    }
+    embed.addFields({ name: "\u200B", value: "\u200B" });
 
-          fs.writeFileSync("./errorsandsomeshit.txt", shit, "utf8");
-
-          console.log(error);
-        }),
-    2000 // Interval Miliseconds
-  );
+    for (let server in json) {
+      if (client.channels.cache.has(json[server].channel)) {
+        let channel = client.channels.cache.get(json[server].channel);
+        channel.send({
+          embeds: [embed],
+          content: client.guilds.cache
+            .get(server)
+            .roles.cache.has(json[server].role)
+            ? client.guilds.cache.get(server).roles.cache.get(json[server].role)
+                .name !== "@everyone"
+              ? `<@&${json[server].role}>`
+              : "@everyone"
+            : undefined,
+        });
+      }
+    }
+  };
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
