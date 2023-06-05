@@ -4,7 +4,6 @@ const fs = require("node:fs");
 const { registerCommands, registerButtons } = require("./reg.js");
 const WebSocket = require("ws");
 const WEBSOCKET_URL = "wss://ws.tzevaadom.co.il:8443/socket?platform=WEB";
-const NOTIFICATIONS_API_URL = "https://api.tzevaadom.co.il/notifications";
 
 const {
   Client,
@@ -64,6 +63,7 @@ client.on("ready", async () => {
       fs.writeFileSync("channelServer.json", newData, "utf8");
     }
   }
+
   let ws = new WebSocket(WEBSOCKET_URL, {
     headers: {
       origin: "https://www.tzevaadom.co.il",
@@ -77,7 +77,11 @@ client.on("ready", async () => {
     if (isReconnecting) return;
     isReconnecting = true;
     console.log("ws reconnecting");
-    setTimeout(WSConnection, 5000);
+    ws = new WebSocket(WEBSOCKET_URL, {
+      headers: {
+        origin: "https://www.tzevaadom.co.il",
+      },
+    });
   };
   ws.onopen = (e) => {
     console.log("ws connected");
@@ -140,7 +144,7 @@ client.on("ready", async () => {
 
       embed.addFields({
         name: alert.cities[city],
-        value: `זמן כניסה למרחב מוגן: ${countdown[cityCountDown]["he"]}`,
+        value: `זמן כניסה למ"מ: ${countdown[cityCountDown]["he"]}`,
         inline: true,
       });
     }
