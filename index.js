@@ -77,16 +77,19 @@ client.on("ready", async () => {
     if (isReconnecting) return;
     isReconnecting = true;
     console.log("ws reconnecting");
-    ws = new WebSocket(WEBSOCKET_URL, {
-      headers: {
-        origin: "https://www.tzevaadom.co.il",
-      },
-    });
+    setInterval(
+      () =>
+        (ws = new WebSocket(WEBSOCKET_URL, {
+          headers: {
+            origin: "https://www.tzevaadom.co.il",
+          },
+        })),
+      2000
+    );
   };
   ws.onopen = (e) => {
     console.log("ws connected");
-    connectionStatus = 0;
-    runBackupAPI = false;
+    isReconnecting = false;
   };
   ws.onclose = (e) => {
     handleReconnect();
