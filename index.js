@@ -70,32 +70,26 @@ client.on("ready", async () => {
     },
   });
 
-  let isReconnecting = false;
-
-  const handleReconnect = () => {
-    ws.close();
-    if (isReconnecting) return;
-    isReconnecting = true;
-    console.log("ws reconnecting");
-    setInterval(
-      () =>
-        (ws = new WebSocket(WEBSOCKET_URL, {
-          headers: {
-            origin: "https://www.tzevaadom.co.il",
-          },
-        })),
-      2000
-    );
-  };
   ws.onopen = (e) => {
     console.log("ws connected");
-    isReconnecting = false;
   };
   ws.onclose = (e) => {
-    handleReconnect();
+    let text = fs.readFileSync("errorsandsomeshit.txt", {
+      encoding: "utf8",
+    });
+    text += e;
+    fs.writeFileSync("errorsandsomeshit.txt", text, "utf8");
+    console.log(e);
+    process.exit();
   };
   ws.onerror = (e) => {
-    handleReconnect();
+    let text = fs.readFileSync("errorsandsomeshit.txt", {
+      encoding: "utf8",
+    });
+    text += e;
+    fs.writeFileSync("errorsandsomeshit.txt", text, "utf8");
+    console.log(e);
+    process.exit();
   };
 
   ws.onmessage = async (m) => {
