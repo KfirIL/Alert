@@ -77,7 +77,7 @@ client.on("ready", async () => {
     let text = fs.readFileSync("errorsandsomeshit.txt", {
       encoding: "utf8",
     });
-    text += e;
+    text += `\n${e}`;
     fs.writeFileSync("errorsandsomeshit.txt", text, "utf8");
     console.log(e);
     process.exit();
@@ -99,6 +99,11 @@ client.on("ready", async () => {
     console.log(data);
     if (type !== "ALERT") return;
     const alert = data;
+    let text = fs.readFileSync("errorsandsomeshit.txt", {
+      encoding: "utf8",
+    });
+    text += `\n${alert}`;
+    fs.writeFileSync("errorsandsomeshit.txt", text, "utf8");
 
     json = JSON.parse(
       fs.readFileSync("channelServer.json", {
