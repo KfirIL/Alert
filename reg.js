@@ -59,13 +59,27 @@ async function registerButtons(interaction) {
     let text;
     switch (interaction.customId) {
       case "resetall":
-        delete json[interaction.guild.id];
+        if (json[interaction.guild.id] === undefined) {
+          const newObj = {
+            [interaction.guild.id]: {
+              channel: "",
+              role: "",
+            },
+          };
+          Object.assign(json, newObj);
+
+          json = JSON.stringify(json);
+        } else {
+          json[interaction.guild.id].channel = "";
+          json[interaction.guild.id].role = "";
+        }
         writeDataToFile(json);
         text = "כל ההגדרות אופסו בהצלחה.";
         break;
 
       case "resetroom":
         json[interaction.guild.id].channel = "";
+        writeDataToFile(json);
         text = "ההגדרה אופסה בהצלחה";
         break;
 

@@ -71,33 +71,26 @@ module.exports = {
       })
       .setTimestamp(new Date());
 
-    const resetAll = new ActionRowBuilder() // Reset All Button
-      .addComponents(
-        new ButtonBuilder()
-          .setCustomId("resetall")
-          .setLabel("אפס את כל ההגדרות")
-          .setStyle(ButtonStyle.Danger)
-      );
+    const resetAll = new ButtonBuilder() // Reset All Button
+      .setCustomId("resetall")
+      .setLabel("אפס את כל ההגדרות")
+      .setStyle(ButtonStyle.Danger);
 
-    const resetRoom = new ActionRowBuilder() // Reset All Button
-      .addComponents(
-        new ButtonBuilder()
-          .setCustomId("resetroom")
-          .setLabel("אפס את חדר ההתרעות")
-          .setStyle(ButtonStyle.Danger)
-      );
+    const resetRoom = new ButtonBuilder() // Reset All Button
+      .setCustomId("resetroom")
+      .setLabel("אפס את חדר ההתרעות")
+      .setStyle(ButtonStyle.Danger);
 
-    const resetRole = new ActionRowBuilder() // Reset All Button
-      .addComponents(
-        new ButtonBuilder()
-          .setCustomId("resetrole")
-          .setLabel("אפס את תפקיד ההתרעות")
-          .setStyle(ButtonStyle.Danger)
-      );
+    const resetRole = new ButtonBuilder() // Reset All Button
+      .setCustomId("resetrole")
+      .setLabel("אפס את תפקיד ההתרעות")
+      .setStyle(ButtonStyle.Danger);
 
     await interaction.reply({
       embeds: [embed],
-      components: [resetAll, resetRoom, resetRole],
+      components: [
+        new ActionRowBuilder().addComponents(resetAll, resetRoom, resetRole),
+      ],
       ephemeral: true,
     });
   },
