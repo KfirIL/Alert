@@ -102,7 +102,7 @@ client.on("ready", async () => {
     let text = fs.readFileSync("errorsandsomeshit.txt", {
       encoding: "utf8",
     });
-    text += `\n${alert}`;
+    text += `\n${JSON.stringify(alert)}`;
     fs.writeFileSync("errorsandsomeshit.txt", text, "utf8");
 
     json = JSON.parse(
