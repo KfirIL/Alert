@@ -98,6 +98,7 @@ client.on("ready", async () => {
     console.log(type);
     console.log(data);
     if (type !== "ALERT") return;
+    if (data.threat !== 0) return;
     const alert = data;
     let text = fs.readFileSync("errorsandsomeshit.txt", {
       encoding: "utf8",
