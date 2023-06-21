@@ -114,11 +114,7 @@ client.on("ready", async () => {
 
     const embed = new EmbedBuilder()
       .setColor("#f39a20")
-      .setTitle(
-        alert.cities.length === 1
-          ? "התרעת פיקוד העורף בעיר אחת"
-          : `התרעת פיקוד העורף ב־${alert.cities.length} ערים`
-      )
+      .setTitle("ירי טילים ורקטות")
       .setDescription("היכנסו למרחב המוגן ושהו בו 10 דקות")
       .setURL("https://www.oref.org.il//12481-he/Pakar.aspx")
       .setAuthor({
