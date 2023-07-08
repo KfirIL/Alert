@@ -5,6 +5,7 @@ const {
   SlashCommandBuilder,
   PermissionFlagsBits,
   EmbedBuilder,
+  PermissionsBitField,
 } = require("discord.js");
 
 module.exports = {
@@ -60,6 +61,15 @@ module.exports = {
     if (channel === undefined)
       return interaction.reply({
         content: "נא להגדיר חדר קודם",
+        ephemeral: true,
+      });
+    else if (
+      channel
+        .permissionsFor(interaction.guild.members.me)
+        .has(PermissionsBitField.Flags.SendMessages)
+    )
+      return interaction.reply({
+        content: "חסרה גישה לחדר המוגדר",
         ephemeral: true,
       });
 

@@ -10,6 +10,7 @@ const {
   GatewayIntentBits,
   EmbedBuilder,
   Events,
+  PermissionsBitField,
 } = require("discord.js");
 
 const client = new Client({
@@ -150,20 +151,29 @@ client.on("ready", async () => {
     embed.addFields({ name: "\u200B", value: "\u200B" });
 
     for (let server in json) {
-      if (client.channels.cache.has(json[server].channel)) {
-        let channel = client.channels.cache.get(json[server].channel);
-        channel.send({
-          embeds: [embed],
-          content: client.guilds.cache
-            .get(server)
-            .roles.cache.has(json[server].role)
-            ? client.guilds.cache.get(server).roles.cache.get(json[server].role)
-                .name !== "@everyone"
-              ? `<@&${json[server].role}>`
-              : "@everyone"
-            : undefined,
-        });
-      }
+      const channel = client.guild.channels.cache.has(json[server].channel)
+        ? client.guild.channels.cache.get(json[server].channel)
+        : undefined;
+
+      if (client == undefined) return;
+      else if (
+        channel
+          .permissionsFor(interaction.guild.members.me)
+          .has(PermissionsBitField.Flags.SendMessages)
+      )
+        return;
+
+      channel.send({
+        embeds: [embed],
+        content: client.guilds.cache
+          .get(server)
+          .roles.cache.has(json[server].role)
+          ? client.guilds.cache.get(server).roles.cache.get(json[server].role)
+              .name !== "@everyone"
+            ? `<@&${json[server].role}>`
+            : "@everyone"
+          : undefined,
+      });
     }
   };
 });
