@@ -64,7 +64,7 @@ module.exports = {
         ephemeral: true,
       });
     else if (
-      channel
+      !channel
         .permissionsFor(interaction.guild.members.me)
         .has(PermissionsBitField.Flags.SendMessages)
     )

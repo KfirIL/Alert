@@ -157,7 +157,7 @@ client.on("ready", async () => {
 
       if (client == undefined) return;
       else if (
-        channel
+        !channel
           .permissionsFor(interaction.guild.members.me)
           .has(PermissionsBitField.Flags.SendMessages)
       )
