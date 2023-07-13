@@ -78,7 +78,7 @@ client.on("ready", async () => {
     let text = fs.readFileSync("errorsandsomeshit.txt", {
       encoding: "utf8",
     });
-    text += `\n${e}`;
+    text += `\n${JSON.stringify(e)}`;
     fs.writeFileSync("errorsandsomeshit.txt", text, "utf8");
     console.log(e);
     process.exit();
@@ -87,7 +87,7 @@ client.on("ready", async () => {
     let text = fs.readFileSync("errorsandsomeshit.txt", {
       encoding: "utf8",
     });
-    text += e;
+    text += JSON.stringify(e);
     fs.writeFileSync("errorsandsomeshit.txt", text, "utf8");
     console.log(e);
     process.exit();
