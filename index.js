@@ -80,8 +80,8 @@ client.on("ready", async () => {
     });
     text += `\n${JSON.stringify(e)}`;
     fs.writeFileSync("errorsandsomeshit.txt", text, "utf8");
-    console.log(e);
-    process.exit();
+    console.log(`\n\n\nClosed: ${e}`);
+    // process.exit();
   };
   ws.onerror = (e) => {
     let text = fs.readFileSync("errorsandsomeshit.txt", {
@@ -89,8 +89,7 @@ client.on("ready", async () => {
     });
     text += JSON.stringify(e);
     fs.writeFileSync("errorsandsomeshit.txt", text, "utf8");
-    console.log(e);
-    process.exit();
+    console.log(`Error: ${e}`);
   };
 
   ws.onmessage = async (m) => {
