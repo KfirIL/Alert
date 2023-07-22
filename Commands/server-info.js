@@ -43,7 +43,7 @@ module.exports = {
         name: "מנהל ההתרעות של ישראל",
       })
       .setThumbnail(
-        "https://cdn.discordapp.com/attachments/1041017624299048981/1132259616550551662/Alert-Logo.png"
+        "https://cdn.discordapp.com/attachments/1041017624299048981/1132264780481187860/Alert-Logo.png"
       )
       .setDescription("להלן הגדרות אשר הוגדרו בשרת זה:")
       .addFields(

@@ -82,14 +82,18 @@ module.exports = {
         name: "מנהל ההתרעות של ישראל",
       })
       .setThumbnail(
-        "https://cdn.discordapp.com/attachments/1041017624299048981/1132259616550551662/Alert-Logo.png"
+        "https://cdn.discordapp.com/attachments/1041017624299048981/1132264780481187860/Alert-Logo.png"
       )
       .addFields(
         {
           name: "אזור בארץ:",
           value: "ניסיון",
         },
-        { name: "\u200B", value: "\u200B" }
+        { name: "\u200B", value: "\u200B" },
+        {
+          name: "יישובים:",
+          value: "​", // Whitespace character
+        }
       )
       .setFooter({
         text: "התוכן לא מהווה תחליף להתרעות בזמן אמת. כדי לקבל התרעות מדוייקות נא להיכנס לאתר פיקוד העורף.",
