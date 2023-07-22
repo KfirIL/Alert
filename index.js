@@ -119,12 +119,9 @@ client.on("ready", async () => {
       .setURL("https://www.oref.org.il//12481-he/Pakar.aspx")
       .setAuthor({
         name: "מנהל ההתרעות של ישראל",
-        iconURL:
-          "https://cdn.discordapp.com/attachments/776039568163995649/1094287528451915906/Pakar.png",
-        url: "https://www.oref.org.il//12481-he/Pakar.aspx",
       })
       .setThumbnail(
-        "https://cdn.discordapp.com/attachments/776039568163995649/1094287528451915906/Pakar.png"
+        "https://cdn.discordapp.com/attachments/1041017624299048981/1132259616550551662/Alert-Logo.png"
       )
       .addFields(
         {

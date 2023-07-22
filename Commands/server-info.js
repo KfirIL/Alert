@@ -41,14 +41,11 @@ module.exports = {
       .setTitle("הגדרות הקיימות בשרת זה")
       .setAuthor({
         name: "מנהל ההתרעות של ישראל",
-        url: "https://www.oref.org.il//12481-he/Pakar.aspx",
-        iconURL:
-          "https://cdn.discordapp.com/attachments/776039568163995649/1094287528451915906/Pakar.png",
       })
-      .setDescription("להלן הגדרות אשר הוגדרו בשרת זה:")
       .setThumbnail(
-        "https://cdn.discordapp.com/attachments/776039568163995649/1094287528451915906/Pakar.png"
+        "https://cdn.discordapp.com/attachments/1041017624299048981/1132259616550551662/Alert-Logo.png"
       )
+      .setDescription("להלן הגדרות אשר הוגדרו בשרת זה:")
       .addFields(
         {
           name: "החדר בו יישלחו התרעות",
