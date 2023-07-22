@@ -79,10 +79,9 @@ module.exports = {
       .setDescription("היכנסו למרחב המוגן ושהו בו 10 דקות")
       .setURL("https://www.oref.org.il//12481-he/Pakar.aspx")
       .setAuthor({
-        name: "פיקוד העורף",
+        name: "מנהל ההתרעות של ישראל",
         iconURL:
           "https://cdn.discordapp.com/attachments/776039568163995649/1094287528451915906/Pakar.png",
-        url: "https://www.oref.org.il//12481-he/Pakar.aspx",
       })
       .setThumbnail(
         "https://cdn.discordapp.com/attachments/776039568163995649/1094287528451915906/Pakar.png"

@@ -11,9 +11,7 @@ module.exports = {
       option
         .setName("התפקיד-שיתוייג-במקרה-התרעה")
         .setRequired(true)
-        .setDescription(
-          "הכנס את רול ההתרעה שברצונך לקבל בו את התרעות פיקוד העורף"
-        )
+        .setDescription("הכנס את רול ההתרעה שברצונך לקבל בו את ההתרעות")
     )
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 

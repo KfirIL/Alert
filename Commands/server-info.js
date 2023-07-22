@@ -40,7 +40,7 @@ module.exports = {
       .setColor("#f39a20")
       .setTitle("הגדרות הקיימות בשרת זה")
       .setAuthor({
-        name: "התרעות פיקוד העורף",
+        name: "מנהל ההתרעות של ישראל",
         url: "https://www.oref.org.il//12481-he/Pakar.aspx",
         iconURL:
           "https://cdn.discordapp.com/attachments/776039568163995649/1094287528451915906/Pakar.png",
