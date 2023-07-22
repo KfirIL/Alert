@@ -113,7 +113,7 @@ client.on("ready", async () => {
     );
 
     const embed = new EmbedBuilder()
-      .setColor("#f39a20")
+      .setColor("#ff3d00")
       .setTitle("ירי טילים ורקטות")
       .setDescription("היכנסו למרחב המוגן ושהו בו 10 דקות")
       .setURL("https://www.oref.org.il//12481-he/Pakar.aspx")

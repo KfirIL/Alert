@@ -37,7 +37,7 @@ module.exports = {
     const isRole = interaction.guild.roles.cache.has(json[serverId].role);
     const role = interaction.guild.roles.cache.get(json[serverId].role);
     const embed = new EmbedBuilder() // The embed
-      .setColor("#f39a20")
+      .setColor("#ff3d00")
       .setTitle("הגדרות הקיימות בשרת זה")
       .setAuthor({
         name: "מנהל ההתרעות של ישראל",
