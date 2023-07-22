@@ -89,7 +89,7 @@ client.on("ready", async () => {
     });
     text += JSON.stringify(e);
     fs.writeFileSync("errorsandsomeshit.txt", text, "utf8");
-    console.log(`Error: ${e}`);
+    console.log(`Error: ${JSON.stringify(e)}`);
   };
 
   ws.onmessage = async (m) => {
