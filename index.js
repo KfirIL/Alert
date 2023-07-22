@@ -80,7 +80,7 @@ client.on("ready", async () => {
     });
     text += `\n${JSON.stringify(e)}`;
     fs.writeFileSync("errorsandsomeshit.txt", text, "utf8");
-    console.log(`\n\n\nClosed: ${e}`);
+    console.log(`\n\n\nClosed: ${JSON.stringify(e)}`);
     // process.exit();
   };
   ws.onerror = (e) => {
