@@ -65,24 +65,27 @@ client.on("ready", async () => {
     }
   }
 
-  let ws = new WebSocket(WEBSOCKET_URL, {
-    headers: {
-      origin: "https://www.tzevaadom.co.il",
-    },
-  });
+  let ws;
 
-  ws.onopen = (e) => {
+  function connect() {
+    ws = new WebSocket(WEBSOCKET_URL, {
+      headers: {
+        origin: "https://www.tzevaadom.co.il",
+      },
+    });
+  }
+
+  connect();
+
+  ws.onopen = () => {
     console.log("ws connected");
   };
-  ws.onclose = (e) => {
-    let text = fs.readFileSync("errorsandsomeshit.txt", {
-      encoding: "utf8",
-    });
-    text += `\n${JSON.stringify(e)}`;
-    fs.writeFileSync("errorsandsomeshit.txt", text, "utf8");
-    console.log(`\n\n\nClosed: ${JSON.stringify(e)}`);
-    // process.exit();
+
+  ws.onclose = () => {
+    console.log("\n\n\nClosed");
+    connect;
   };
+
   ws.onerror = (e) => {
     let text = fs.readFileSync("errorsandsomeshit.txt", {
       encoding: "utf8",
