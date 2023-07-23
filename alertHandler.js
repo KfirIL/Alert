@@ -147,4 +147,4 @@ async function wsConnect(client) {
     );
 }
 
-module.exports = wsConnect;
+module.exports = { wsConnect };
