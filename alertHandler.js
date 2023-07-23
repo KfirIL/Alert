@@ -24,6 +24,7 @@ async function fetchCitiesData() {
 }
 
 async function onAlert(client, m, cities, areas, countdown) {
+  if (typeof m.data != "string") return;
   const { type, data: alert } = JSON.parse(m.data);
   if (type !== "ALERT") return;
   if (data.threat !== 0 && data.threat !== 2) return;
