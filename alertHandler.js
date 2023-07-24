@@ -118,8 +118,9 @@ async function wsConnect(client) {
     },
   });
 
-  function reconnect(ws) {
-    ws = new WebSocket(WEBSOCKET_URL, {
+  function reconnect() {
+    console.log("Trying to reconnect...");
+    return new WebSocket(WEBSOCKET_URL, {
       headers: {
         origin: "https://www.tzevaadom.co.il",
       },
@@ -130,7 +131,7 @@ async function wsConnect(client) {
   };
   ws.onclose = () => {
     console.log("\n\n\nClosed");
-    reconnect(ws);
+    ws = reconnect();
   };
 
   ws.onerror = (e) => {
