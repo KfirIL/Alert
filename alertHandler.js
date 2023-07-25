@@ -119,22 +119,29 @@ function createWebSocket() {
 
 async function wsConnect(client) {
   const citiesData = await fetchCitiesData();
+  let ws = createWebSocket();
 
-  let ws;
-  ws = createWebSocket();
+  let isReconnecting = false;
+  const handleReconnect = () => {
+    ws.close(); // In case of an error.
+    if (isReconnecting) return; // Sometimes it will close a couple of times.
+    isReconnecting = true;
+    console.log("Trying to reconnect...");
+
+    setTimeout(wsConnect, 5000); // Actual Reconnect.
+  };
 
   ws.onopen = () => {
     console.log("WebSocket connected");
   };
   ws.onclose = () => {
     console.log("\n\n\nWebSocket Closed");
-    setTimeout(() => {
-      wsConnect();
-    }, 5000);
+    handleReconnect();
   };
   ws.onerror = (e) => {
     writeToErrorsAndDataFile(e);
     console.log(`Error: ${JSON.stringify(e)}`);
+    handleReconnect();
   };
 
   ws.onmessage = (m) =>
