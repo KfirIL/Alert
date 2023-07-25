@@ -109,45 +109,42 @@ async function onAlert(client, m, cities, areas, countdown) {
   }
 }
 
+function createWebSocket() {
+  return new WebSocket(WEBSOCKET_URL, {
+    headers: {
+      origin: "https://www.tzevaadom.co.il",
+    },
+  });
+}
+
 async function wsConnect(client) {
   const citiesData = await fetchCitiesData();
 
   let ws;
+  ws = createWebSocket();
 
-  function createWebSocket() {
-    return new WebSocket(WEBSOCKET_URL, {
-      headers: {
-        origin: "https://www.tzevaadom.co.il",
-      },
-    });
-  }
+  ws.onopen = () => {
+    console.log("WebSocket connected");
+  };
+  ws.onclose = () => {
+    console.log("\n\n\nWebSocket Closed");
+    setTimeout(() => {
+      wsConnect();
+    }, 5000);
+  };
+  ws.onerror = (e) => {
+    writeToErrorsAndDataFile(e);
+    console.log(`Error: ${JSON.stringify(e)}`);
+  };
 
-  function initWebSocket() {
-    ws = createWebSocket();
-
-    ws.onopen = () => {
-      console.log("WebSocket connected");
-    };
-    ws.onclose = () => {
-      console.log("\n\n\nWebSocket Closed");
-      setTimeout(() => {
-        initWebSocket();
-      }, 5000);
-    };
-    ws.onerror = (e) => {
-      writeToErrorsAndDataFile(e);
-      console.log(`Error: ${JSON.stringify(e)}`);
-    };
-
-    ws.onmessage = (m) =>
-      onAlert(
-        client,
-        m,
-        citiesData.cities,
-        citiesData.areas,
-        citiesData.countdown
-      );
-  }
+  ws.onmessage = (m) =>
+    onAlert(
+      client,
+      m,
+      citiesData.cities,
+      citiesData.areas,
+      citiesData.countdown
+    );
 }
 
 module.exports = { wsConnect };
