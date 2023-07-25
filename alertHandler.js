@@ -135,7 +135,7 @@ async function wsConnect(client) {
     console.log("WebSocket connected");
   };
   ws.onclose = () => {
-    console.log("\n\n\nWebSocket Closed");
+    console.log("WebSocket Closed");
     handleReconnect();
   };
   ws.onerror = (e) => {
