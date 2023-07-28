@@ -29,6 +29,7 @@ async function onAlert(client, m, cities, areas, countdown) {
   if (type !== "ALERT") return;
   if (data.threat !== 0 && data.threat !== 2) return;
   writeToErrorsAndDataFile(alert);
+  console.log(JSON.stringify(alert));
 
   // Reloading json file.
   const json = JSON.parse(
@@ -132,7 +133,7 @@ async function wsConnect(client) {
   };
 
   ws.onopen = () => {
-    console.log("WebSocket connected");
+    //console.log("WebSocket connected");
   };
   ws.onclose = () => {
     //console.log("WebSocket Closed");
