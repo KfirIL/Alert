@@ -26,8 +26,8 @@ async function fetchCitiesData() {
 async function onAlert(client, m, cities, areas, countdown) {
   if (typeof m.data != "string") return;
   const { type, data: alert } = JSON.parse(m.data);
-  if (type !== "ALERT") return;
-  if (data.threat !== 0 && data.threat !== 2) return;
+  if (type != "ALERT") return;
+  if (alert.threat !== 0 && alert.threat !== 2) return;
   writeToErrorsAndDataFile(alert);
   console.log(JSON.stringify(alert));
 
@@ -39,17 +39,34 @@ async function onAlert(client, m, cities, areas, countdown) {
   );
 
   const title =
-    threat === 0
+    alert.threat === 0
       ? "ירי טילים ורקטות"
-      : threat === 2
+      : alert.threat === 2
       ? "חשש לחדירת מחבל"
       : undefined;
+
+  let times = {};
+
+  let allSame = true;
+  let lastCount = "0";
+  let embedDescription = "";
+
+  for (let city in alert.cities) {
+    const cityCountDown = cities[alert.cities[city]].countdown;
+    if (lastCount === "0") lastCount = cityCountDown;
+    else if (lastCount != cityCountDown) allSame = false;
+    if (times[cityCountDown] === undefined) times[cityCountDown] = [];
+    times[cityCountDown].push(city);
+    lastCount = cityCountDown;
+
+    embedDescription += alert.cities[city] + ", ";
+  }
 
   const embed = new EmbedBuilder()
     .setColor("#ff3d00")
     .setTitle(title)
-    .setDescription("היכנסו למרחב המוגן ושהו בו 10 דקות")
     .setURL("https://www.oref.org.il//12481-he/Pakar.aspx")
+    .setDescription(embedDescription.slice(0, -2))
     .setAuthor({
       name: "מנהל ההתרעות של ישראל",
     })
@@ -63,8 +80,8 @@ async function onAlert(client, m, cities, areas, countdown) {
       },
       { name: "\u200B", value: "\u200B" },
       {
-        name: "יישובים:",
-        value: "​", // Whitespace character
+        name: allSame ? "זמן כניסה למרחב מוגן:" : "זמני כניסה למרחב מוגן:",
+        value: allSame ? `${lastCount} שניות` : "\u200B", // Whitespace character
       }
     )
     .setFooter({
@@ -72,37 +89,38 @@ async function onAlert(client, m, cities, areas, countdown) {
     })
     .setTimestamp(new Date(alert.time * 1000));
 
-  for (let city in alert.cities) {
-    const cityCountDown = cities[alert.cities[city]].countdown;
-
-    embed.addFields({
-      name: alert.cities[city],
-      value: `זמן כניסה למ"מ: ${countdown[cityCountDown]["he"]}`,
-      inline: true,
+  if (!allSame) {
+    Object.entries(times).forEach(([time, cities]) => {
+      let citiesString = "";
+      cities.forEach((city) => (citiesString += city + ", "));
+      embed.addFields({
+        name: citiesString.slice(0, -2),
+        value: time + "שניות",
+      });
     });
   }
+
   embed.addFields({ name: "\u200B", value: "\u200B" });
 
   for (let server in json) {
-    const channel = client.guild.channels.cache.has(json[server].channel)
-      ? client.guild.channels.cache.get(json[server].channel)
+    const guild = client.guilds.cache.get(server);
+    if (guild === undefined) continue;
+    const channel = guild.channels.cache.has(json[server].channel)
+      ? guild.channels.cache.get(json[server].channel)
       : undefined;
 
-    if (client == undefined) return;
-    else if (
+    if (
+      channel == undefined ||
       !channel
-        .permissionsFor(interaction.guild.members.me)
+        .permissionsFor(guild.members.me)
         .has(PermissionsBitField.Flags.SendMessages)
     )
-      return;
+      continue;
 
     channel.send({
       embeds: [embed],
-      content: client.guilds.cache
-        .get(server)
-        .roles.cache.has(json[server].role)
-        ? client.guilds.cache.get(server).roles.cache.get(json[server].role)
-            .name !== "@everyone"
+      content: guild.roles.cache.has(json[server].role)
+        ? guild.roles.cache.get(json[server].role).name !== "@everyone"
           ? `<@&${json[server].role}>`
           : "@everyone"
         : undefined,

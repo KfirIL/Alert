@@ -73,11 +73,15 @@ module.exports = {
         ephemeral: true,
       });
 
+    let citiesString = "";
+
+    for (let city in alert.cities) citiesString += alert.cities[city] + ", ";
+
     const embed = new EmbedBuilder()
       .setColor("#ff3d00")
       .setTitle("ירי טילים ורקטות")
-      .setDescription("היכנסו למרחב המוגן ושהו בו 10 דקות")
       .setURL("https://www.oref.org.il//12481-he/Pakar.aspx")
+      .setDescription(citiesString.slice(0, -2))
       .setAuthor({
         name: "מנהל ההתרעות של ישראל",
       })
@@ -90,26 +94,13 @@ module.exports = {
           value: "ניסיון",
         },
         { name: "\u200B", value: "\u200B" },
-        {
-          name: "יישובים:",
-          value: "​", // Whitespace character
-        }
+        { name: "זמן כניסה למרחב מוגן:", value: "15 שניות" },
+        { name: "\u200B", value: "\u200B" }
       )
       .setFooter({
         text: "התוכן לא מהווה תחליף להתרעות בזמן אמת. כדי לקבל התרעות מדוייקות נא להיכנס לאתר פיקוד העורף.",
       })
       .setTimestamp(new Date(alert.time));
-
-    for (let city in alert.cities) {
-      const cityCountDown = "15 שניות";
-
-      embed.addFields({
-        name: alert.cities[city],
-        value: `זמן כניסה למ"מ: ${cityCountDown}`,
-        inline: true,
-      });
-    }
-    embed.addFields({ name: "\u200B", value: "\u200B" });
 
     channel.send({
       embeds: [embed],
