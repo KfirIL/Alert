@@ -3,6 +3,7 @@ const fs = require("node:fs");
 const { Client, GatewayIntentBits, Events } = require("discord.js");
 const { registerCommands, registerButtons } = require("./reg.js");
 const { wsConnect } = require("./alertHandler.js");
+const channelServer = path.join(__dirname, "channelServer.json");
 
 const client = new Client({
   intents: [
@@ -22,7 +23,7 @@ client.on("ready", () => {
   });
 
   const json = JSON.parse(
-    fs.readFileSync("./channelServer.json", {
+    fs.readFileSync(channelServer, {
       encoding: "utf8",
     })
   );
@@ -33,7 +34,7 @@ client.on("ready", () => {
       delete json[server];
 
       let newData = JSON.stringify(json);
-      fs.writeFileSync("channelServer.json", newData, "utf8");
+      fs.writeFileSync(channelServer, newData, "utf8");
     }
   }
 
