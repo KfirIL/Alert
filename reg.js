@@ -1,6 +1,8 @@
 const fs = require("node:fs");
 const path = require("node:path");
 
+const channelServer = path.join(parentDirectory, "channelServer.json");
+
 const commands = new Map();
 const commandsPath = path.join(__dirname, "Commands");
 const commandFiles = fs
@@ -50,12 +52,12 @@ async function registerCommands(interaction) {
 
 function writeDataToFile(data) {
   const newData = JSON.stringify(data);
-  fs.writeFileSync("channelServer.json", newData, "utf8");
+  fs.writeFileSync(channelServer, newData, "utf8");
 }
 
 async function registerButtons(interaction) {
   if (interaction.isButton()) {
-    let json = JSON.parse(fs.readFileSync("channelServer.json", "utf8"));
+    let json = JSON.parse(fs.readFileSync(channelServer, "utf8"));
     let text;
     switch (interaction.customId) {
       case "resetall":
