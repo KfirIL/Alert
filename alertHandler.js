@@ -52,11 +52,11 @@ async function onAlert(client, m, cities, areas, countdown) {
   let embedDescription = "";
 
   for (let city in alert.cities) {
-    const cityCountDown = cities[alert.cities[city]].countdown;
+    const cityCountDown = countdown[cities[alert.cities[city]].countdown]["he"];
     if (lastCount === "0") lastCount = cityCountDown;
     else if (lastCount != cityCountDown) allSame = false;
     if (times[cityCountDown] === undefined) times[cityCountDown] = [];
-    times[cityCountDown].push(city);
+    times[cityCountDown].push(alert.cities[city]);
     lastCount = cityCountDown;
 
     embedDescription += alert.cities[city] + ", ";
@@ -81,7 +81,7 @@ async function onAlert(client, m, cities, areas, countdown) {
       { name: "\u200B", value: "\u200B" },
       {
         name: allSame ? "זמן כניסה למרחב מוגן:" : "זמני כניסה למרחב מוגן:",
-        value: allSame ? `${lastCount} שניות` : "\u200B", // Whitespace character
+        value: allSame ? `${lastCount}` : "\u200B", // Whitespace character
       }
     )
     .setFooter({
@@ -90,12 +90,12 @@ async function onAlert(client, m, cities, areas, countdown) {
     .setTimestamp(new Date(alert.time * 1000));
 
   if (!allSame) {
-    Object.entries(times).forEach(([time, cities]) => {
+    Object.entries(times).forEach(([time]) => {
       let citiesString = "";
-      cities.forEach((city) => (citiesString += city + ", "));
+      times[time].forEach((city) => (citiesString += city + ", "));
       embed.addFields({
         name: citiesString.slice(0, -2),
-        value: time + "שניות",
+        value: time,
       });
     });
   }
