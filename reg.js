@@ -1,7 +1,7 @@
 const fs = require("node:fs");
 const path = require("node:path");
 
-const channelServer = path.join(parentDirectory, "channelServer.json");
+const channelServer = path.join(__dirname, "channelServer.json");
 
 const commands = new Map();
 const commandsPath = path.join(__dirname, "Commands");
