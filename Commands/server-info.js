@@ -1,6 +1,9 @@
 require("dotenv").config();
 const fs = require("node:fs");
 const path = require("node:path");
+const parentDirectory = path.join(__dirname, "..");
+
+const channelServer = path.join(parentDirectory, "channelServer.json");
 
 const {
   SlashCommandBuilder,
@@ -18,7 +21,7 @@ module.exports = {
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
   async execute(interaction) {
     const serverId = interaction.guild.id;
-    const json = JSON.parse(fs.readFileSync("channelServer.json", "utf8"));
+    const json = JSON.parse(fs.readFileSync(channelServer, "utf8"));
     if (json[serverId] === undefined) {
       const newObj = {
         [serverId]: {
@@ -30,7 +33,7 @@ module.exports = {
 
       const newData = JSON.stringify(json);
 
-      fs.writeFileSync("channelServer.json", newData, "utf8");
+      fs.writeFileSync(channelServer, newData, "utf8");
     }
     const isChannel = interaction.guild.channels.cache.has(
       json[serverId].channel

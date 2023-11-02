@@ -1,8 +1,9 @@
 require("dotenv").config();
 const fs = require("node:fs");
 const path = require("node:path");
+const parentDirectory = path.join(__dirname, "..");
 
-const channelServer = path.join(__dirname, "channelServer.json");
+const channelServer = path.join(parentDirectory, "channelServer.json");
 
 const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
 

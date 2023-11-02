@@ -1,5 +1,9 @@
 require("dotenv").config();
 const fs = require("node:fs");
+const path = require("node:path");
+const parentDirectory = path.join(__dirname, "..");
+
+const channelServer = path.join(parentDirectory, "channelServer.json");
 
 const {
   SlashCommandBuilder,
@@ -14,17 +18,7 @@ module.exports = {
     .setDescription("מציג כיצד תראה התרעה בזמן אמת (כולל תיוג)")
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
   async execute(interaction) {
-    const json = JSON.parse(fs.readFileSync("channelServer.json", "utf8"));
-
-    const jsonCities = JSON.parse(
-      fs.readFileSync("cities.json", {
-        encoding: "utf8",
-      })
-    );
-
-    const cities = jsonCities.cities;
-    const areas = jsonCities.areas;
-    const countdown = jsonCities.countdown;
+    const json = JSON.parse(fs.readFileSync(channelServer, "utf8"));
 
     const serverId = interaction.guild.id;
     if (json[serverId] === undefined) {
@@ -38,7 +32,7 @@ module.exports = {
 
       const newData = JSON.stringify(json);
 
-      fs.writeFileSync("channelServer.json", newData, "utf8");
+      fs.writeFileSync(channelServer, newData, "utf8");
     }
 
     const alert = {
