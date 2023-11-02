@@ -26,7 +26,7 @@ module.exports = {
     ).id;
 
     const jsonData = JSON.parse(
-      fs.readFileSync("channelServer.json", {
+      fs.readFileSync(channelServer, {
         encoding: "utf8",
       })
     );
@@ -47,7 +47,7 @@ module.exports = {
 
     const newData = JSON.stringify(jsonData);
 
-    fs.writeFileSync("channelServer.json", newData, "utf8");
+    fs.writeFileSync(channelServer, newData, "utf8");
 
     await interaction.reply({ content: "החדר הוגדר בהצלחה", ephemeral: true });
   },
