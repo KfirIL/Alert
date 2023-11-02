@@ -1,5 +1,8 @@
 require("dotenv").config();
 const fs = require("node:fs");
+const path = require("node:path");
+
+const channelServer = path.join(__dirname, "channelServer.json");
 
 const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
 
@@ -20,7 +23,7 @@ module.exports = {
     const roleId = interaction.options.getRole("התפקיד-שיתוייג-במקרה-התרעה").id;
 
     const jsonData = JSON.parse(
-      fs.readFileSync("channelServer.json", {
+      fs.readFileSync(channelServer, {
         encoding: "utf8",
       })
     );
@@ -41,7 +44,7 @@ module.exports = {
 
     const newData = JSON.stringify(jsonData);
 
-    fs.writeFileSync("channelServer.json", newData, "utf8");
+    fs.writeFileSync(channelServer, newData, "utf8");
 
     await interaction.reply({
       content: "התפקיד הוגדר בהצלחה",

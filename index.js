@@ -4,6 +4,7 @@ const path = require("node:path");
 const { Client, GatewayIntentBits, Events } = require("discord.js");
 const { registerCommands, registerButtons } = require("./reg.js");
 const { wsConnect } = require("./alertHandler.js");
+
 const channelServer = path.join(__dirname, "channelServer.json");
 
 const client = new Client({

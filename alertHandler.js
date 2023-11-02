@@ -1,15 +1,19 @@
 const { EmbedBuilder, PermissionsBitField } = require("discord.js");
 const fs = require("node:fs");
+const path = require("node:path");
 const WebSocket = require("ws");
+
+const channelServer = path.join(__dirname, "channelServer.json");
+const errorsandsomeshit = path.join(__dirname, "errorsandsomeshit.txt");
 
 const WEBSOCKET_URL = "wss://ws.tzevaadom.co.il:8443/socket?platform=WEB";
 
 function writeToErrorsAndDataFile(data) {
-  let text = fs.readFileSync("errorsandsomeshit.txt", {
+  let text = fs.readFileSync(errorsandsomeshit, {
     encoding: "utf8",
   });
   text += `\n${JSON.stringify(data)}`;
-  fs.writeFileSync("errorsandsomeshit.txt", text, "utf8");
+  fs.writeFileSync(errorsandsomeshit, text, "utf8");
 }
 
 async function fetchCitiesData() {
@@ -33,7 +37,7 @@ async function onAlert(client, m, cities, areas, countdown) {
 
   // Reloading json file.
   const json = JSON.parse(
-    fs.readFileSync("channelServer.json", {
+    fs.readFileSync(channelServer, {
       encoding: "utf8",
     })
   );
