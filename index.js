@@ -1,5 +1,6 @@
 require("dotenv").config();
 const fs = require("node:fs");
+const path = require("node:path");
 const { Client, GatewayIntentBits, Events } = require("discord.js");
 const { registerCommands, registerButtons } = require("./reg.js");
 const { wsConnect } = require("./alertHandler.js");
