@@ -22,7 +22,7 @@ client.on("ready", () => {
   });
 
   const json = JSON.parse(
-    fs.readFileSync("channelServer.json", {
+    fs.readFileSync("./channelServer.json", {
       encoding: "utf8",
     })
   );
