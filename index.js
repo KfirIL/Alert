@@ -21,7 +21,7 @@ client.on("ready", async () => {
     type: parseInt(process.env.STATUS_CATEGORY),
   });
   console.log(
-    `Logged in as ${client.user.tag} with status ${process.env.STATUS}!`
+    `Logged in as ${client.user.tag} with status ${process.env.STATUS} ${process.env.PASS}!`
   );
 
   await main();
