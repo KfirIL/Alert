@@ -2,9 +2,7 @@ const { EmbedBuilder, PermissionsBitField } = require("discord.js");
 const fs = require("node:fs");
 const path = require("node:path");
 const WebSocket = require("ws");
-const client = require("./index");
 
-const channelServer = path.join(__dirname, "channelServer.json");
 const errorsandsomeshit = path.join(__dirname, "errorsandsomeshit.txt");
 
 const WEBSOCKET_URL = "wss://ws.tzevaadom.co.il:8443/socket?platform=WEB";
@@ -36,12 +34,7 @@ async function onAlert(m, cities, areas, countdown) {
   writeToErrorsAndDataFile(alert);
   console.log(JSON.stringify(alert));
 
-  // Reloading json file.
-  const json = JSON.parse(
-    fs.readFileSync(channelServer, {
-      encoding: "utf8",
-    })
-  );
+  const servers = await collection.find({}).toArray();
 
   const title =
     alert.threat === 0
@@ -107,11 +100,11 @@ async function onAlert(m, cities, areas, countdown) {
 
   embed.addFields({ name: "\u200B", value: "\u200B" });
 
-  for (let server in json) {
-    const guild = client.guilds.cache.get(server);
-    if (guild === undefined) continue;
-    const channel = guild.channels.cache.has(json[server].channel)
-      ? guild.channels.cache.get(json[server].channel)
+  servers.forEach((server) => {
+    const guild = client.guilds.cache.get(server._id);
+    if (guild === undefined) return;
+    const channel = guild.channels.cache.has(server.channel)
+      ? guild.channels.cache.get(server.channel)
       : undefined;
 
     if (
@@ -120,17 +113,17 @@ async function onAlert(m, cities, areas, countdown) {
         .permissionsFor(guild.members.me)
         .has(PermissionsBitField.Flags.SendMessages)
     )
-      continue;
+      return;
 
     channel.send({
       embeds: [embed],
-      content: guild.roles.cache.has(json[server].role)
-        ? guild.roles.cache.get(json[server].role).name !== "@everyone"
-          ? `<@&${json[server].role}>`
+      content: guild.roles.cache.has(server.role)
+        ? guild.roles.cache.get(server.role).name !== "@everyone"
+          ? `<@&${server.role}>`
           : "@everyone"
         : undefined,
     });
-  }
+  });
 }
 
 function createWebSocket() {

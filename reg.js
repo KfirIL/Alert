@@ -1,8 +1,6 @@
 const fs = require("node:fs");
 const path = require("node:path");
 
-const channelServer = path.join(__dirname, "channelServer.json");
-
 const commands = new Map();
 const commandsPath = path.join(__dirname, "Commands");
 const commandFiles = fs
@@ -50,43 +48,31 @@ async function registerCommands(interaction) {
   }
 }
 
-function writeDataToFile(data) {
-  const newData = JSON.stringify(data);
-  fs.writeFileSync(channelServer, newData, "utf8");
-}
-
 async function registerButtons(interaction) {
   if (interaction.isButton()) {
-    let json = JSON.parse(fs.readFileSync(channelServer, "utf8"));
+    //const server = collection.findOne({ _id: interaction.guild.id });
     let text;
     switch (interaction.customId) {
       case "resetall":
-        if (json[interaction.guild.id] === undefined) {
-          const newObj = {
-            [interaction.guild.id]: {
-              channel: "",
-              role: "",
-            },
-          };
-          Object.assign(json, newObj);
-
-          json = JSON.stringify(json);
-        } else {
-          json[interaction.guild.id].channel = "";
-          json[interaction.guild.id].role = "";
-        }
-        writeDataToFile(json);
+        await collection.findOneAndUpdate(
+          { _id: interaction.guild.id },
+          { $set: { channel: "", role: "" } }
+        );
         text = "כל ההגדרות אופסו בהצלחה.";
         break;
 
-      case "resetroom":
-        json[interaction.guild.id].channel = "";
-        writeDataToFile(json);
+      case "resetchannel":
+        await collection.findOneAndUpdate(
+          { _id: interaction.guild.id },
+          { $set: { channel: "" } }
+        );
         text = "ההגדרה אופסה בהצלחה";
         break;
-
       case "resetrole":
-        json[interaction.guild.id].role = "";
+        await collection.findOneAndUpdate(
+          { _id: interaction.guild.id },
+          { $set: { role: "" } }
+        );
         text = "ההגדרה אופסה בהצלחה";
         break;
     }

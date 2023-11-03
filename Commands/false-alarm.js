@@ -1,10 +1,3 @@
-require("dotenv").config();
-const fs = require("node:fs");
-const path = require("node:path");
-const parentDirectory = path.join(__dirname, "..");
-
-const channelServer = path.join(parentDirectory, "channelServer.json");
-
 const {
   SlashCommandBuilder,
   PermissionFlagsBits,
@@ -18,22 +11,8 @@ module.exports = {
     .setDescription("מציג כיצד תראה התרעה בזמן אמת (כולל תיוג)")
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
   async execute(interaction) {
-    const json = JSON.parse(fs.readFileSync(channelServer, "utf8"));
-
     const serverId = interaction.guild.id;
-    if (json[serverId] === undefined) {
-      const newObj = {
-        [serverId]: {
-          channel: "123",
-          role: "123",
-        },
-      };
-      Object.assign(json, newObj);
-
-      const newData = JSON.stringify(json);
-
-      fs.writeFileSync(channelServer, newData, "utf8");
-    }
+    const server = await collection.findOne({ _id: serverId });
 
     const alert = {
       cities: [
@@ -48,8 +27,8 @@ module.exports = {
       time: new Date().getTime(),
     };
 
-    const channel = interaction.guild.channels.cache.has(json[serverId].channel)
-      ? interaction.guild.channels.cache.get(json[serverId].channel)
+    const channel = interaction.guild.channels.cache.has(server.channel)
+      ? interaction.guild.channels.cache.get(server.channel)
       : undefined;
 
     if (channel === undefined)
@@ -98,9 +77,8 @@ module.exports = {
 
     channel.send({
       embeds: [embed],
-      content: interaction.guild.roles.cache.has(json[serverId].role)
-        ? interaction.guild.roles.cache.get(json[serverId].role).name !==
-          "@everyone"
+      content: interaction.guild.roles.cache.has(server.role)
+        ? interaction.guild.roles.cache.get(server.role).name !== "@everyone"
           ? `<@&${json[serverId].role}>`
           : "@everyone"
         : undefined,

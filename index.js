@@ -1,13 +1,11 @@
 require("dotenv").config();
-const fs = require("node:fs");
-const path = require("node:path");
+require("./globals.js");
+const main = require("./mongoose.js");
 const { Client, GatewayIntentBits, Events } = require("discord.js");
 const { registerCommands, registerButtons } = require("./reg.js");
 const { wsConnect } = require("./alertHandler.js");
 
-const channelServer = path.join(__dirname, "channelServer.json");
-
-const client = new Client({
+client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
@@ -17,28 +15,24 @@ const client = new Client({
   ],
 });
 
-client.on("ready", () => {
-  console.log(`Logged in as ${client.user.tag}!`);
+client.on("ready", async () => {
   client.user.setActivity({
     name: process.env.STATUS,
     type: parseInt(process.env.STATUS_CATEGORY),
   });
-
-  const json = JSON.parse(
-    fs.readFileSync(channelServer, {
-      encoding: "utf8",
-    })
+  console.log(
+    `Logged in as ${client.user.tag} with status ${process.env.STATUS}!`
   );
 
-  // Checking for any servers that were left
-  for (let server in json) {
-    if (!client.guilds.cache.has(server)) {
-      delete json[server];
+  await main();
+  const servers = await collection.find({}).toArray();
 
-      let newData = JSON.stringify(json);
-      fs.writeFileSync(channelServer, newData, "utf8");
+  // Checking for any servers that were left
+  servers.forEach((server) => {
+    if (!client.guilds.cache.has(server._id)) {
+      collection.deleteOne({ _id: server._id });
     }
-  }
+  });
 
   wsConnect();
 });
@@ -50,5 +44,3 @@ client.on(Events.InteractionCreate, async (interaction) => {
 });
 
 client.login(process.env.DISCORD_TOKEN);
-
-module.exports = client;

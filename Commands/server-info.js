@@ -1,10 +1,3 @@
-require("dotenv").config();
-const fs = require("node:fs");
-const path = require("node:path");
-const parentDirectory = path.join(__dirname, "..");
-
-const channelServer = path.join(parentDirectory, "channelServer.json");
-
 const {
   SlashCommandBuilder,
   PermissionFlagsBits,
@@ -21,26 +14,16 @@ module.exports = {
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
   async execute(interaction) {
     const serverId = interaction.guild.id;
-    const json = JSON.parse(fs.readFileSync(channelServer, "utf8"));
-    if (json[serverId] === undefined) {
-      const newObj = {
-        [serverId]: {
-          channel: "123",
-          role: "123",
-          //areas: {},
-        },
+    let server = await collection.findOne({ _id: serverId });
+    if (!server)
+      server = {
+        channel: "",
+        role: "",
+        areas: {},
       };
-      Object.assign(json, newObj);
-
-      const newData = JSON.stringify(json);
-
-      fs.writeFileSync(channelServer, newData, "utf8");
-    }
-    const isChannel = interaction.guild.channels.cache.has(
-      json[serverId].channel
-    );
-    const isRole = interaction.guild.roles.cache.has(json[serverId].role);
-    const role = interaction.guild.roles.cache.get(json[serverId].role);
+    const isChannel = interaction.guild.channels.cache.has(server.channel);
+    const isRoleExist = interaction.guild.roles.cache.has(server.role);
+    const role = interaction.guild.roles.cache.get(server.role);
     const embed = new EmbedBuilder() // The embed
       .setColor("#ff3d00")
       .setTitle("הגדרות הקיימות בשרת זה")
@@ -54,14 +37,14 @@ module.exports = {
       .addFields(
         {
           name: "החדר בו יישלחו התרעות",
-          value: isChannel ? `<#${json[serverId].channel}>` : "לא הוגדר",
+          value: isChannel ? `<#${server.channel}>` : "לא הוגדר",
           inline: true,
         },
         {
           name: "תפקיד שיתוייג בעת שליחת התרעה",
-          value: isRole
+          value: isRoleExist
             ? role.name !== "@everyone"
-              ? `<@&${json[serverId].role}>`
+              ? `<@&${server.role}>`
               : "@everyone"
             : "לא הוגדר",
           inline: true,
@@ -79,7 +62,7 @@ module.exports = {
       .setStyle(ButtonStyle.Danger);
 
     const resetRoom = new ButtonBuilder() // Reset All Button
-      .setCustomId("resetroom")
+      .setCustomId("resetchannel")
       .setLabel("אפס את חדר ההתרעות")
       .setStyle(ButtonStyle.Danger);
 
