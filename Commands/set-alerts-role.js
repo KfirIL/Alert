@@ -10,7 +10,7 @@ const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("הגדרת-תפקיד-התרעה")
-    .setDescription("חדר שבו יוצגו ההתרעות")
+    .setDescription("התפקיד שיתויג במקרה התרעה")
     .addRoleOption((option) =>
       option
         .setName("התפקיד-שיתוייג-במקרה-התרעה")

@@ -10,7 +10,7 @@ const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("הגדרת-חדר-התרעות")
-    .setDescription("חדר שבו יוצגו ההתרעות")
+    .setDescription("החדר שבו יוצגו ההתרעות")
     .addChannelOption((option) =>
       option
         .setName("הערוץ-בו-תרצה-לקבל-התרעות")

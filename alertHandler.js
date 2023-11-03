@@ -2,6 +2,7 @@ const { EmbedBuilder, PermissionsBitField } = require("discord.js");
 const fs = require("node:fs");
 const path = require("node:path");
 const WebSocket = require("ws");
+const client = require("./index");
 
 const channelServer = path.join(__dirname, "channelServer.json");
 const errorsandsomeshit = path.join(__dirname, "errorsandsomeshit.txt");
@@ -27,7 +28,7 @@ async function fetchCitiesData() {
   return response.json();
 }
 
-async function onAlert(client, m, cities, areas, countdown) {
+async function onAlert(m, cities, areas, countdown) {
   if (typeof m.data != "string") return;
   const { type, data: alert } = JSON.parse(m.data);
   if (type != "ALERT") return;
@@ -140,7 +141,7 @@ function createWebSocket() {
   });
 }
 
-async function wsConnect(client) {
+async function wsConnect() {
   const citiesData = await fetchCitiesData();
   let ws = createWebSocket();
 
@@ -168,13 +169,7 @@ async function wsConnect(client) {
   };
 
   ws.onmessage = (m) =>
-    onAlert(
-      client,
-      m,
-      citiesData.cities,
-      citiesData.areas,
-      citiesData.countdown
-    );
+    onAlert(m, citiesData.cities, citiesData.areas, citiesData.countdown);
 }
 
 module.exports = { wsConnect };

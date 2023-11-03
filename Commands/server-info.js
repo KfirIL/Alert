@@ -27,6 +27,7 @@ module.exports = {
         [serverId]: {
           channel: "123",
           role: "123",
+          //areas: {},
         },
       };
       Object.assign(json, newObj);

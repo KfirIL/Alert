@@ -40,7 +40,7 @@ client.on("ready", () => {
     }
   }
 
-  wsConnect(client);
+  wsConnect();
 });
 
 // Interactions
@@ -50,3 +50,5 @@ client.on(Events.InteractionCreate, async (interaction) => {
 });
 
 client.login(process.env.DISCORD_TOKEN);
+
+module.exports = client;
