@@ -26,10 +26,6 @@ async function fetchCitiesData() {
   return response.json();
 }
 
-function checkIfAppears(included, server) {
-  for (const area in server.areas) return server.areas[area].includes(included);
-}
-
 async function onAlert(m, cities, areas, countdown) {
   if (typeof m.data != "string") return;
   const { type, data: alert } = JSON.parse(m.data);
@@ -105,7 +101,13 @@ async function onAlert(m, cities, areas, countdown) {
   embed.addFields({ name: "\u200B", value: "\u200B" });
 
   servers.forEach((server) => {
-    if (!alertAreas.every((a) => checkIfAppears(a, server))) return;
+    if (
+      !alertAreas.every((a) =>
+        Object.values(server.areas).some((area) => area.includes(a))
+      ) ||
+      Object.values(areas).every((area) => area.length === 0)
+    )
+      return;
     const guild = client.guilds.cache.get(server._id);
     if (guild === undefined) return;
     const channel = guild.channels.cache.has(server.channel)
