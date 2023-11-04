@@ -3,16 +3,16 @@ const fs = require("node:fs");
 const path = require("node:path");
 const WebSocket = require("ws");
 
-const errorsandsomeshit = path.join(__dirname, "errorsandsomeshit.txt");
+const logPath = path.join(__dirname, "log.txt");
 
 const WEBSOCKET_URL = "wss://ws.tzevaadom.co.il:8443/socket?platform=WEB";
 
-function writeToErrorsAndDataFile(data) {
-  let text = fs.readFileSync(errorsandsomeshit, {
+function writeToLog(data) {
+  let text = fs.readFileSync(logPath, {
     encoding: "utf8",
   });
   text += `\n${JSON.stringify(data)}`;
-  fs.writeFileSync(errorsandsomeshit, text, "utf8");
+  fs.writeFileSync(logPath, text, "utf8");
 }
 
 async function fetchCitiesData() {
@@ -31,7 +31,7 @@ async function onAlert(m, cities, areas, countdown) {
   const { type, data: alert } = JSON.parse(m.data);
   if (type != "ALERT") return;
   if (alert.threat !== 0 && alert.threat !== 2) return;
-  writeToErrorsAndDataFile(alert);
+  writeToLog(alert);
   console.log(JSON.stringify(alert));
 
   const servers = await collection.find({}).toArray();
@@ -156,7 +156,7 @@ async function wsConnect() {
     handleReconnect();
   };
   ws.onerror = (e) => {
-    writeToErrorsAndDataFile(e);
+    writeToLog(e);
     //console.log(`Error: ${JSON.stringify(e)}`);
     handleReconnect();
   };

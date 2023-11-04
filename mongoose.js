@@ -1,7 +1,5 @@
-require("dotenv").config();
 const { MongoClient, ServerApiVersion } = require("mongodb");
 
-console.log(process.env.PASS);
 const URI = `mongodb+srv://Voldemort:${process.env.PASS}@dcluster.69ofifx.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(URI, {
   serverApi: {
