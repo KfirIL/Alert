@@ -13,17 +13,101 @@ districts = {
     "בקעת בית שאן",
     "העמקים",
   ],
-  center: ["שרון", "שומרון", "דן", "השפלה", "בקעה", "ירושלים"],
+  center: ["שרון", "שומרון", "דן", "ירקון", "השפלה", "בקעה", "ירושלים"],
   south: [
     "דרום הנגב",
     "שפלת יהודה",
     "ים המלח",
     "עוטף עזה",
+    "לכיש",
+    "מערב לכיש",
     "יהודה",
     "מרכז הנגב",
     "מערב הנגב",
-    "מרכז הנגב",
     "אילת",
     "ערבה",
   ],
+};
+
+threatsNames = {
+  0: {
+    he: "צבע אדום",
+    en: "Red Alert",
+    ru: "Цева Адом",
+    ar: "اللون الأحمر",
+    es: "Rojo Color",
+  },
+  1: {
+    he: "אירוע חומרים מסוכנים",
+    en: "Hazardous Materials Incident",
+    ru: "Утечка опасных веществ",
+    ar: "حادثة المواد الخطرة",
+    es: "materiales peligrosos incidente",
+  },
+  2: {
+    he: "חשש לחדירת מחבלים",
+    en: "Fear of Terrorists infiltration",
+    ru: "Подозрение на проникновение террористов",
+    ar: "تسلل مخربين",
+    es: "Terroristas infiltración",
+  },
+  3: {
+    he: "רעידת אדמה",
+    en: "Earthquake",
+    ru: "Землетрясение",
+    ar: "هزة أرضية",
+    es: "Terremoto",
+  },
+  4: {
+    he: "חשש לצונאמי",
+    en: "Fear of a tsunami",
+    ru: "Угроза цунами",
+    ar: "تحسبا للتسونامي",
+    es: "Amenaza de tsunami",
+  },
+  5: {
+    he: "חדירת כלי טיס עוין",
+    en: "Hostile aircraft intrusion",
+    ru: "Проникновение беспилотного самолета",
+    ar: "تسلل طائرة بدون طيار",
+    es: "infiltración de aviones no tripulados",
+  },
+  6: {
+    he: "חשש לאירוע רדיולוגי",
+    en: "Fear of a Radiological incident",
+    ru: "Радиоактивная опасность",
+    ar: "حدث إشعاعي",
+    es: "Radiológico Incidente",
+  },
+  7: {
+    he: "ירי בלתי קונבנציונלי",
+    en: "Non-conventional missile",
+    ru: "Неконвенциональная ракета",
+    ar: "صاروخ غير تقليدي",
+    es: "misil no convencional",
+  },
+  8: {
+    he: "התרעה",
+    en: "Alert",
+    ru: "предупреждение",
+    ar: "تحذير",
+    es: "advertencia",
+  },
+  9: {
+    he: "תרגיל פיקוד העורף",
+    en: "Home Front Command Drill",
+    ru: "Учения Службы Тыла",
+    ar: "تمرين",
+    es: "Ejercicio",
+  },
+};
+
+serverTemplate = {
+  channel: "",
+  role: "",
+  areas: {
+    north: [],
+    center: [],
+    south: [],
+  },
 };

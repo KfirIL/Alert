@@ -26,23 +26,22 @@ async function fetchCitiesData() {
   return response.json();
 }
 
+function checkIfAppears(included, server) {
+  for (const area in server.areas) return server.areas[area].includes(included);
+}
+
 async function onAlert(m, cities, areas, countdown) {
   if (typeof m.data != "string") return;
   const { type, data: alert } = JSON.parse(m.data);
   if (type != "ALERT") return;
-  if (alert.threat !== 0 && alert.threat !== 2) return;
   writeToLog(alert);
+  //if (alert.threat !== 0 && alert.threat !== 2 && alert.threat !== 5) return;
+  if (alert.isDrill) return;
   console.log(JSON.stringify(alert));
 
-  const servers = await collection.find({}).toArray();
+  const servers = await collection.find().toArray();
 
-  const title =
-    alert.threat === 0
-      ? "ירי טילים ורקטות"
-      : alert.threat === 2
-      ? "חשש לחדירת מחבל"
-      : undefined;
-
+  const title = threatsNames[alert.threat]["he"];
   let times = {};
 
   let allSame = true;
@@ -60,13 +59,18 @@ async function onAlert(m, cities, areas, countdown) {
     embedDescription += alert.cities[city] + ", ";
   }
 
+  const alertAreas = new Set();
+  alert.cities.forEach(
+    (city) => alertAreas.add(areas[cities[city].area]["he"]).sort().toArray
+  );
+
   const embed = new EmbedBuilder()
     .setColor("#ff3d00")
     .setTitle(title)
-    .setURL("https://www.oref.org.il//12481-he/Pakar.aspx")
+    // .setURL("https://www.oref.org.il//12481-he/Pakar.aspx")
     .setDescription(embedDescription.slice(0, -2))
     .setAuthor({
-      name: "מנהל ההתרעות של ישראל",
+      name: "התרעות בישראל",
     })
     .setThumbnail(
       "https://cdn.discordapp.com/attachments/1041017624299048981/1132264780481187860/Alert-Logo.png"
@@ -74,7 +78,7 @@ async function onAlert(m, cities, areas, countdown) {
     .addFields(
       {
         name: "אזור בארץ:",
-        value: areas[cities[alert.cities[0]].area]["he"],
+        value: alertAreas.join(", "),
       },
       { name: "\u200B", value: "\u200B" },
       {
@@ -101,6 +105,7 @@ async function onAlert(m, cities, areas, countdown) {
   embed.addFields({ name: "\u200B", value: "\u200B" });
 
   servers.forEach((server) => {
+    if (!alertAreas.every((a) => checkIfAppears(a, server))) return;
     const guild = client.guilds.cache.get(server._id);
     if (guild === undefined) return;
     const channel = guild.channels.cache.has(server.channel)

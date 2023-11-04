@@ -52,11 +52,11 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setColor("#ff3d00")
-      .setTitle("ירי טילים ורקטות")
-      .setURL("https://www.oref.org.il//12481-he/Pakar.aspx")
+      .setTitle("צבע אדום")
+      // .setURL("https://www.oref.org.il//12481-he/Pakar.aspx")
       .setDescription(citiesString.slice(0, -2))
       .setAuthor({
-        name: "מנהל ההתרעות של ישראל",
+        name: "התרעות בישראל",
       })
       .setThumbnail(
         "https://cdn.discordapp.com/attachments/1041017624299048981/1132264780481187860/Alert-Logo.png"

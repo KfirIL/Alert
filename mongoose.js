@@ -13,8 +13,8 @@ async function main() {
   try {
     await client.connect();
 
-    database = client.db("alert_bot");
-    collection = database.collection("servers");
+    database = client.db(process.env.DB);
+    collection = database.collection(process.env.COL);
     await client.db("alert_bot").command({ ping: 1 });
     console.log("Connected to DB");
   } catch (e) {
@@ -23,4 +23,11 @@ async function main() {
   }
 }
 
-module.exports = main;
+async function close() {
+  await client.close();
+}
+
+module.exports = {
+  main,
+  close,
+};

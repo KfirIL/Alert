@@ -1,9 +1,15 @@
 require("dotenv").config();
 require("./globals.js");
-const main = require("./mongoose.js");
+const { main, close } = require("./mongoose.js");
 const { Client, GatewayIntentBits, Events } = require("discord.js");
-const { registerCommands, registerButtons } = require("./reg.js");
+const { registerCommands } = require("./reg.js");
 const { wsConnect } = require("./alertHandler.js");
+
+// Disconnecting server
+process.on("beforeExit", async () => {
+  console.log("Disconnecting DB...");
+  await close();
+});
 
 client = new Client({
   intents: [
@@ -39,7 +45,6 @@ client.on("ready", async () => {
 
 // Interactions
 client.on(Events.InteractionCreate, async (interaction) => {
-  registerButtons(interaction);
   registerCommands(interaction);
 });
 

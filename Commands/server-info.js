@@ -2,10 +2,15 @@ const {
   SlashCommandBuilder,
   PermissionFlagsBits,
   EmbedBuilder,
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
 } = require("discord.js");
+
+async function sleep(seconds) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, seconds * 1000);
+  });
+}
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -15,68 +20,77 @@ module.exports = {
   async execute(interaction) {
     const serverId = interaction.guild.id;
     let server = await collection.findOne({ _id: serverId });
-    if (!server)
-      server = {
-        channel: "",
-        role: "",
-        areas: {},
-      };
-    const isChannel = interaction.guild.channels.cache.has(server.channel);
-    const isRoleExist = interaction.guild.roles.cache.has(server.role);
-    const role = interaction.guild.roles.cache.get(server.role);
-    const embed = new EmbedBuilder() // The embed
-      .setColor("#ff3d00")
-      .setTitle("הגדרות הקיימות בשרת זה")
-      .setAuthor({
-        name: "מנהל ההתרעות של ישראל",
-      })
-      .setThumbnail(
-        "https://cdn.discordapp.com/attachments/1041017624299048981/1132264780481187860/Alert-Logo.png"
-      )
-      .setDescription("להלן הגדרות אשר הוגדרו בשרת זה:")
-      .addFields(
-        {
-          name: "החדר בו יישלחו התרעות",
-          value: isChannel ? `<#${server.channel}>` : "לא הוגדר",
-          inline: true,
-        },
-        {
-          name: "תפקיד שיתוייג בעת שליחת התרעה",
-          value: isRoleExist
-            ? role.name !== "@everyone"
-              ? `<@&${server.role}>`
-              : "@everyone"
-            : "לא הוגדר",
-          inline: true,
-        },
-        { name: "\u200B", value: "\u200B" }
-      )
-      .setFooter({
-        text: "התוכן לא מהווה תחליף להתרעות בזמן אמת. כדי לקבל התרעות מדוייקות נא להיכנס לאתר פיקוד העורף.",
-      })
-      .setTimestamp(new Date());
+    if (!server) server = serverTemplate;
 
-    const resetAll = new ButtonBuilder() // Reset All Button
-      .setCustomId("resetall")
-      .setLabel("אפס את כל ההגדרות")
-      .setStyle(ButtonStyle.Danger);
+    async function load() {
+      const doesChannelExist = interaction.guild.channels.cache.has(
+        server.channel
+      );
+      const doesRoleExist = interaction.guild.roles.cache.has(server.role);
+      const doesAreasExist = !Object.values(server.areas).every(
+        (area) => !area.length
+      );
+      const roleName = doesRoleExist
+        ? interaction.guild.roles.cache.get(server.role).name
+        : undefined;
 
-    const resetRoom = new ButtonBuilder() // Reset All Button
-      .setCustomId("resetchannel")
-      .setLabel("אפס את חדר ההתרעות")
-      .setStyle(ButtonStyle.Danger);
-
-    const resetRole = new ButtonBuilder() // Reset All Button
-      .setCustomId("resetrole")
-      .setLabel("אפס את תפקיד ההתרעות")
-      .setStyle(ButtonStyle.Danger);
+      return (embed = new EmbedBuilder() // The embed
+        .setColor("#ff3d00")
+        .setTitle("הגדרות הקיימות בשרת זה")
+        .setAuthor({
+          name: "מנהל ההתרעות של ישראל",
+        })
+        .setThumbnail(
+          "https://cdn.discordapp.com/attachments/1041017624299048981/1132264780481187860/Alert-Logo.png"
+        )
+        .setDescription("להלן הגדרות אשר הוגדרו בשרת זה:")
+        .addFields(
+          {
+            name: "החדר בו יישלחו התרעות",
+            value: doesChannelExist ? `<#${server.channel}>` : "לא הוגדר",
+            inline: true,
+          },
+          {
+            name: "תפקיד שיתוייג בעת שליחת התרעה",
+            value: doesRoleExist
+              ? roleName !== "@everyone"
+                ? `<@&${server.role}>`
+                : "@everyone"
+              : "לא הוגדר",
+            inline: true,
+          },
+          {
+            name: "האזורים שבהם יתקבלו התרעות",
+            value: doesAreasExist
+              ? Object.values(server.areas).flat().sort().join(", ")
+              : "כל האזורים",
+          },
+          { name: "\u200B", value: "\u200B" }
+        )
+        .setFooter({
+          text: "התוכן לא מהווה תחליף להתרעות בזמן אמת. כדי לקבל התרעות מדוייקות נא להיכנס לאתר פיקוד העורף.",
+        })
+        .setTimestamp(new Date()));
+    }
 
     await interaction.reply({
-      embeds: [embed],
-      components: [
-        new ActionRowBuilder().addComponents(resetAll, resetRoom, resetRole),
-      ],
+      embeds: [await load()],
       ephemeral: true,
     });
+
+    const changeStream = collection.watch([], { fullDocument: "updateLookup" });
+
+    changeStream.on("change", async (change) => {
+      if (change.fullDocument._id === serverId) {
+        server = change.fullDocument;
+        await interaction.editReply({
+          embeds: [await load()],
+          ephemeral: true,
+        });
+      }
+    });
+
+    await sleep(300);
+    await changeStream.close();
   },
 };

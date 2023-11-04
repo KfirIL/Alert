@@ -29,7 +29,11 @@ module.exports = {
           _id: serverId,
           channel: channelId,
           role: "",
-          areas: {},
+          areas: {
+            north: [],
+            center: [],
+            south: [],
+          },
           creationDate: new Date(),
         });
       } catch (e) {

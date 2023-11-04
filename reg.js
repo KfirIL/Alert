@@ -48,39 +48,4 @@ async function registerCommands(interaction) {
   }
 }
 
-async function registerButtons(interaction) {
-  if (interaction.isButton()) {
-    //const server = collection.findOne({ _id: interaction.guild.id });
-    let text;
-    switch (interaction.customId) {
-      case "resetall":
-        await collection.findOneAndUpdate(
-          { _id: interaction.guild.id },
-          { $set: { channel: "", role: "" } }
-        );
-        text = "כל ההגדרות אופסו בהצלחה.";
-        break;
-
-      case "resetchannel":
-        await collection.findOneAndUpdate(
-          { _id: interaction.guild.id },
-          { $set: { channel: "" } }
-        );
-        text = "ההגדרה אופסה בהצלחה";
-        break;
-      case "resetrole":
-        await collection.findOneAndUpdate(
-          { _id: interaction.guild.id },
-          { $set: { role: "" } }
-        );
-        text = "ההגדרה אופסה בהצלחה";
-        break;
-    }
-    await interaction.reply({
-      content: text,
-      ephemeral: true,
-    });
-  }
-}
-
-module.exports = { registerCommands, registerButtons };
+module.exports = { registerCommands };
