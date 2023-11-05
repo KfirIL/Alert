@@ -26,9 +26,8 @@ async function fetchCitiesData() {
   return response.json();
 }
 
-async function onAlert(m, cities, areas, countdown) {
-  if (typeof m.data != "string") return;
-  const { type, data: alert } = JSON.parse(m.data);
+async function onAlert(alertData, cities, areas, countdown) {
+  const { type, data: alert } = alertData;
   if (type != "ALERT") return;
   writeToLog(alert);
   //if (alert.threat !== 0 && alert.threat !== 2 && alert.threat !== 5) return;
@@ -103,8 +102,8 @@ async function onAlert(m, cities, areas, countdown) {
 
   servers.forEach((server) => {
     if (
-      !alertAreas.every((a) =>
-        Object.values(server.areas).some((area) => area.includes(a))
+      Object.values(server.areas).some((array) =>
+        alertAreas.some((item) => array.includes(item))
       ) ||
       Object.values(areas).every((area) => area.length === 0)
     )
@@ -170,7 +169,14 @@ async function wsConnect() {
   };
 
   ws.onmessage = (m) =>
-    onAlert(m, citiesData.cities, citiesData.areas, citiesData.countdown);
+    typeof m.data === "string"
+      ? onAlert(
+          JSON.parse(m.data),
+          citiesData.cities,
+          citiesData.areas,
+          citiesData.countdown
+        )
+      : null;
 }
 
 module.exports = { wsConnect };
