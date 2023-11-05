@@ -102,7 +102,7 @@ async function onAlert(alertData, cities, areas, countdown) {
 
   servers.forEach((server) => {
     if (
-      Object.values(server.areas).some((array) =>
+      !Object.values(server.areas).some((array) =>
         alertAreas.some((item) => array.includes(item))
       ) ||
       Object.values(areas).every((area) => area.length === 0)
