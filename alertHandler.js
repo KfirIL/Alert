@@ -55,10 +55,11 @@ async function onAlert(m, cities, areas, countdown) {
     embedDescription += alert.cities[city] + ", ";
   }
 
-  const alertAreas = new Set();
+  let alertAreas = new Set();
   alert.cities.forEach(
-    (city) => alertAreas.add(areas[cities[city].area]["he"]).sort().toArray
+    (city) => (alertAreas = alertAreas.add(areas[cities[city].area]["he"]))
   );
+  alertAreas = Array.from(alertAreas).sort();
 
   const embed = new EmbedBuilder()
     .setColor("#ff3d00")
