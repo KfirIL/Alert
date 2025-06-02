@@ -2,6 +2,9 @@
   "name": "alert_bot",
   "version": "1.0.0",
   "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
   "dependencies": {
     "discord.js": "^14.9.0",
     "dotenv": "^16.0.3",
