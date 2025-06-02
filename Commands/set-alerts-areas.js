@@ -78,7 +78,7 @@ module.exports = {
             creationDate: new Date(),
           });
         } catch (e) {
-          console.log(e);
+          console.error(e);
         }
       } else {
         areas = server.areas;
@@ -92,7 +92,7 @@ module.exports = {
       }
 
       await interaction.editReply({
-        content: "נוספו האזורים שנבחרו.",
+        content: "נשמרו האזורים שנבחרו.",
         components: [],
       });
 

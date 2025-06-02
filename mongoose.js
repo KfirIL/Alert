@@ -18,7 +18,7 @@ async function main() {
     await client.db("alert_bot").command({ ping: 1 });
     console.log("Connected to DB");
   } catch (e) {
-    console.log(e);
+    console.error(e);
     await client.close();
   }
 }

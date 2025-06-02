@@ -41,24 +41,6 @@ module.exports = {
       }
     }
 
-    // if (server) {
-    //   jsonData[serverId].channel = channelId;
-    //   console.log(`Channel Id updated for server ${serverId}`);
-    // } else {
-    //   const newObj = {
-    //     [serverId]: {
-    //       ...jsonData[serverId],
-    //       channel: channelId,
-    //     },
-    //   };
-
-    //   Object.assign(jsonData, newObj);
-    // }
-
-    // const newData = JSON.stringify(jsonData);
-
-    // fs.writeFileSync(channelServer, newData, "utf8");
-
     await interaction.reply({ content: "החדר הוגדר בהצלחה", ephemeral: true });
   },
 };

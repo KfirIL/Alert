@@ -35,7 +35,7 @@ module.exports = {
           creationDate: new Date(),
         });
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     }
 

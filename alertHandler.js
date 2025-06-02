@@ -150,7 +150,7 @@ async function wsConnect() {
     ws.close(); // In case of an error.
     if (isReconnecting) return; // Sometimes it will close a couple of times.
     isReconnecting = true;
-    //console.log("Trying to reconnect...");
+    console.log("Trying to reconnect to the WebSocket...");
 
     setTimeout(wsConnect, 5000); // Actual Reconnect.
   };
@@ -164,7 +164,6 @@ async function wsConnect() {
   };
   ws.onerror = (e) => {
     writeToLog(e);
-    //console.log(`Error: ${JSON.stringify(e)}`);
     handleReconnect();
   };
 
