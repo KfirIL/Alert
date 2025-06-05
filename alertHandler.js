@@ -104,8 +104,8 @@ async function onAlert(alertData, cities, areas, countdown) {
     if (
       !Object.values(server.areas).some((array) =>
         alertAreas.some((item) => array.includes(item))
-      ) ||
-      Object.values(areas).every((area) => area.length === 0)
+      ) &&
+      !Object.values(areas).every((area) => area.length === 0)
     )
       return;
     const guild = client.guilds.cache.get(server._id);
